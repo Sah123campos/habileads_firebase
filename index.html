@@ -1,0 +1,4200 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HABILEADS - Sua Imobiliária de Confiança</title>
+    <link rel="icon" type="image/png" href="logohabileads.png" />
+    <link rel="shortcut icon" type="image/png" href="logohabileads.png" />
+    <link rel="apple-touch-icon" href="logohabileads.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="logohabileads.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="logohabileads.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Raleway", sans-serif;
+      }
+
+      :root {
+        --vermelho: #d11a21;
+        --azul: #0a2440;
+        --branco: #ffffff;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      header {
+        background-color: var(--azul);
+        padding: 15px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-placeholder {
+        display: flex;
+        align-items: center;
+        color: var(--branco);
+        font-weight: 800;
+        font-size: 28px;
+      }
+
+      .logo-placeholder .magnet {
+        margin-right: 10px;
+        color: var(--vermelho);
+        font-size: 32px;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 25px;
+      }
+
+      nav ul li a {
+        color: var(--branco);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s;
+        font-size: 16px;
+      }
+
+      nav ul li a:hover {
+        color: var(--vermelho);
+      }
+
+      .menu-toggle {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+      }
+
+      .menu-toggle span {
+        width: 30px;
+        height: 3px;
+        background: var(--branco);
+        margin: 3px 0;
+        transition: 0.3s;
+      }
+
+      .hero {
+        background: url("https://images.unsplash.com/photo-1605146769289-440113cc3d00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80");
+        background-size: cover;
+        background-position: center;
+        color: var(--branco);
+        padding: 120px 0;
+        text-align: center;
+        position: relative;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .hero .container {
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero h1 {
+        font-size: 3.2rem;
+        margin-bottom: 20px;
+        font-weight: 800;
+        text-transform: uppercase;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto 30px;
+        font-weight: 300;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: var(--vermelho);
+        color: var(--branco);
+        padding: 14px 35px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background-color: #b0151c;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-secondary {
+        background-color: transparent;
+        border: 2px solid var(--vermelho);
+        color: var(--vermelho);
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--vermelho);
+        color: var(--branco);
+      }
+
+      section {
+        padding: 80px 0;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+        color: var(--azul);
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .section-title p {
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 400;
+      }
+
+      .properties {
+        background-color: var(--branco);
+      }
+
+      .properties-grid {
+        position: relative;
+        width: 100%;
+        padding: 0 60px;
+      }
+
+      .properties-carousel-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .properties-carousel {
+        display: flex;
+        gap: 30px;
+        padding: 10px 0;
+        will-change: transform;
+        align-items: stretch;
+      }
+
+      .property-card {
+        background-color: var(--branco);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        flex: 0 0 320px;
+        min-width: 320px;
+        max-width: 320px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .property-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .carousel-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background-color: var(--branco);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--azul);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 30;
+        pointer-events: auto;
+        transition: all 0.3s ease;
+      }
+
+      .carousel-nav-btn:hover {
+        background-color: var(--vermelho);
+        color: var(--branco);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .carousel-nav-btn:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+
+      .carousel-nav-btn.prev {
+        left: 10px;
+      }
+
+      .carousel-nav-btn.next {
+        right: 10px;
+      }
+
+      .carousel-nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .carousel-nav-btn:disabled:hover {
+        background-color: var(--branco);
+        color: var(--azul);
+        transform: translateY(-50%) scale(1);
+      }
+
+      .carousel-nav-btn.prev,
+      .carousel-nav-btn.next {
+        opacity: 1;
+        cursor: pointer;
+      }
+
+      .property-img {
+        height: 200px;
+        background-color: #ddd;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .property-carousel {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background-color: #ddd;
+        flex-shrink: 0;
+      }
+
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .carousel-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .carousel-slide.active {
+        opacity: 1;
+        z-index: 1;
+      }
+
+      .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 2;
+      }
+
+      .carousel-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+
+      .carousel-dot.active {
+        background-color: var(--vermelho);
+        width: 24px;
+        border-radius: 4px;
+        border-color: var(--vermelho);
+      }
+
+      .carousel-dot:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+
+      .property-info {
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        min-height: 140px;
+      }
+
+      .property-info h3 {
+        color: var(--azul);
+        margin-bottom: 4px;
+        font-weight: 700;
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        line-height: 1.2;
+      }
+
+      .property-info p {
+        color: #666;
+        margin-bottom: 3px;
+        font-weight: 400;
+        font-size: 0.75rem;
+        line-height: 1.4;
+      }
+
+      .property-info .btn {
+        margin-top: auto;
+        width: 100%;
+        flex-shrink: 0;
+      }
+
+      .property-info ul {
+        margin: 2px 0 0 14px !important;
+        flex-grow: 1;
+      }
+
+      .property-info li {
+        font-size: 0.73rem;
+        margin-bottom: 2px;
+        line-height: 1.3;
+        color: #666;
+        list-style: none;
+      }
+
+      .btn-fullscreen {
+        font-size: 0.8rem;
+        padding: 8px 20px !important;
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .price {
+        color: var(--vermelho);
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 6px;
+        flex-shrink: 0;
+      }
+
+      .detail-info {
+        font-size: 0.73rem;
+        color: #666;
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+
+      .about {
+        background-color: #f9f9f9;
+      }
+
+      .about-content {
+        display: flex;
+        align-items: center;
+        gap: 50px;
+      }
+
+      .about-text {
+        flex: 1;
+      }
+
+      .about-text p {
+        margin-bottom: 20px;
+        font-weight: 400;
+        line-height: 1.8;
+      }
+
+      .about-image {
+        flex: 1;
+        height: 400px;
+        background-color: #ddd;
+        border-radius: 8px;
+        background-image: url("https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=696&q=80");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .concept {
+        background-color: var(--azul);
+        color: var(--branco);
+      }
+
+      .concept .section-title h2 {
+        color: var(--branco);
+      }
+
+      .concept-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .magnet-icon {
+        font-size: 60px;
+        color: var(--vermelho);
+        margin-bottom: 30px;
+      }
+
+      .concept-content h3 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      .concept-content p {
+        margin-bottom: 25px;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        font-weight: 400;
+      }
+
+      .h-meaning {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      .h-meaning h4 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+        color: var(--vermelho);
+      }
+
+      .contact {
+        background-color: var(--azul);
+        color: var(--branco);
+      }
+
+      .contact .section-title h2 {
+        color: var(--branco);
+      }
+
+      .contact-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .address {
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+      }
+
+      .address i {
+        margin-right: 10px;
+        color: var(--vermelho);
+      }
+
+      .social-media {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin-top: 40px;
+      }
+
+      .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        background-color: var(--vermelho);
+        color: var(--branco);
+        border-radius: 50%;
+        font-size: 1.8rem;
+        text-decoration: none;
+        transition:
+          transform 0.3s,
+          background-color 0.3s;
+        outline: none;
+      }
+
+      .social-icon:hover {
+        transform: scale(1.1);
+        background-color: #b0151c;
+      }
+
+      .social-icon:focus {
+        outline: none;
+        box-shadow: none;
+      }
+
+      footer {
+        background-color: #071a2d;
+        color: var(--branco);
+        padding: 40px 0;
+        text-align: center;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .footer-logo {
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .footer-info {
+        margin-top: 20px;
+        font-weight: 300;
+      }
+
+      .modal-fullscreen {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s;
+        overflow: hidden;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .modal-fullscreen.open {
+        display: flex;
+        animation: fadeIn 0.3s;
+      }
+
+      .gallery-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .gallery-main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 90vw;
+        max-height: 70vh;
+        min-height: 0;
+        margin-bottom: 20px;
+      }
+
+      .modal-img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        background: #fff;
+        object-fit: contain;
+        animation: zoomIn 0.4s;
+      }
+
+      .gallery-thumbnails {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 10px 0;
+        max-width: 90vw;
+        flex-shrink: 0;
+        justify-content: center;
+        height: 80px;
+      }
+
+      .thumbnail {
+        width: 80px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .thumbnail:hover {
+        transform: scale(1.05);
+        border-color: var(--vermelho);
+      }
+
+      .thumbnail.active {
+        border-color: var(--vermelho);
+        box-shadow: 0 0 15px rgba(209, 26, 33, 0.5);
+      }
+
+      .gallery-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-shrink: 0;
+        margin-top: 15px;
+      }
+
+      .gallery-prev,
+      .gallery-next {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--vermelho);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+      }
+
+      .gallery-prev:hover,
+      .gallery-next:hover {
+        background: #b0151c;
+        transform: scale(1.1);
+      }
+
+      .gallery-counter {
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 32px;
+        right: 48px;
+        font-size: 40px;
+        color: #fff;
+        cursor: pointer;
+        z-index: 10;
+        transition: color 0.2s;
+        font-weight: bold;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-close:hover {
+        color: #e25555;
+      }
+
+      .admin-trigger {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 2000;
+        background: var(--vermelho);
+        color: var(--branco);
+        border: none;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .admin-trigger:hover {
+        background: #b0151c;
+      }
+
+      .admin-auth,
+      .admin-panel {
+        position: fixed;
+        inset: 0;
+        background: rgba(7, 26, 45, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2500;
+        padding: 20px;
+      }
+
+      .admin-auth.open,
+      .admin-panel.open {
+        display: flex;
+      }
+
+      .admin-box,
+      .admin-panel-box {
+        width: min(100%, 900px);
+        max-height: 90vh;
+        overflow: auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        padding: 28px;
+      }
+
+      .admin-box-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .admin-box h3,
+      .admin-panel-box h3 {
+        color: var(--azul);
+        margin: 0;
+        font-size: 2rem;
+      }
+
+      .admin-box .field,
+      .admin-panel-box .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .admin-box label,
+      .admin-panel-box label {
+        color: var(--azul);
+        font-weight: 700;
+      }
+
+      .admin-box input,
+      .admin-box textarea,
+      .admin-panel-box input,
+      .admin-panel-box textarea {
+        width: 100%;
+        border: 1px solid #d7dfe9;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 1rem;
+        resize: vertical;
+        background: #f9fbff;
+      }
+
+      .admin-box button,
+      .admin-panel-box button {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .admin-box .submit-btn,
+      .admin-panel-box .submit-btn {
+        background: var(--vermelho);
+        color: var(--branco);
+      }
+
+      .admin-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .admin-close {
+        background: var(--vermelho);
+        color: var(--branco);
+        border: none;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        box-shadow: 0 10px 20px rgba(168, 16, 24, 0.18);
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+        margin-left: auto;
+      }
+
+      .admin-close:hover {
+        background: #b0151c;
+        transform: translateY(-1px);
+      }
+
+      .admin-form {
+        background: #f7f9fc;
+        border: 1px solid #e2eaf3;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 28px;
+      }
+
+      .admin-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .admin-form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+
+      .admin-cancel-btn {
+        background: #ebeff5;
+        color: var(--azul);
+      }
+
+      .image-dropzone {
+        border: 2px dashed #c8d4e6;
+        border-radius: 12px;
+        background: #f7faff;
+        padding: 18px 16px;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .image-dropzone.dragover {
+        border-color: var(--vermelho);
+        background: #fff2f2;
+        transform: translateY(-1px);
+      }
+
+      .image-dropzone input[type="file"] {
+        width: 100%;
+        padding: 10px 0;
+        cursor: pointer;
+      }
+
+      .admin-preview {
+        display: none;
+        width: 100%;
+        max-width: 220px;
+        height: 130px;
+        border-radius: 10px;
+        object-fit: cover;
+        margin-top: 10px;
+        border: 1px solid #dfe7f0;
+      }
+
+      .admin-preview.visible {
+        display: block;
+      }
+
+      .admin-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .admin-card-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 16px 18px;
+        border: 1px solid #e4ecf6;
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .admin-card-item img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #e4ecf6;
+      }
+
+      .admin-card-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .admin-card-info h4 {
+        color: var(--azul);
+        margin-bottom: 4px;
+      }
+
+      .admin-card-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .admin-card-actions button {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+      }
+
+      .admin-edit-btn {
+        background: #e9f3ff;
+        color: var(--azul);
+      }
+
+      .admin-delete-btn {
+        background: #ffe7e8;
+        color: #a8282e;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+        }
+
+        nav {
+          display: none;
+          width: 100%;
+        }
+
+        nav.active {
+          display: block;
+        }
+
+        nav ul {
+          flex-direction: column;
+          margin-top: 20px;
+        }
+
+        nav ul li {
+          margin: 10px 0;
+          text-align: center;
+        }
+
+        .menu-toggle {
+          display: flex;
+          position: absolute;
+          top: 20px;
+          right: 20px;
+        }
+
+        .about-content {
+          flex-direction: column;
+        }
+
+        .about-image {
+          height: 250px;
+        }
+
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+
+        .social-media {
+          flex-wrap: wrap;
+        }
+
+        .carousel-nav-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+        }
+
+        .properties-grid {
+          padding: 0 10px;
+        }
+
+        .properties-carousel-wrapper {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          padding: 0 10px 10px;
+        }
+
+        .properties-carousel {
+          gap: 12px;
+          padding: 0;
+          scroll-snap-type: x mandatory;
+          scroll-behavior: smooth;
+        }
+
+        .properties-carousel::-webkit-scrollbar {
+          display: none;
+        }
+
+        .property-card {
+          flex: 0 0 100%;
+          min-width: 100%;
+          max-width: 100%;
+          scroll-snap-align: center;
+          margin: 0;
+        }
+
+        .property-info {
+          min-height: auto;
+        }
+
+        .property-info ul {
+          margin: 0 0 0 12px !important;
+        }
+
+        .property-info li {
+          font-size: 0.72rem;
+        }
+
+        .carousel-nav-btn {
+          display: flex;
+          opacity: 0.95;
+          background-color: rgba(255, 255, 255, 0.95);
+          color: var(--azul);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-nav-btn.prev {
+          left: 8px;
+        }
+
+        .carousel-nav-btn.next {
+          right: 8px;
+        }
+
+        .properties-carousel-wrapper {
+          padding: 0 40px 10px;
+        }
+
+        .gallery-main {
+          max-height: 60vh;
+        }
+
+        .gallery-thumbnails {
+          max-width: 98vw;
+          gap: 8px;
+          height: 70px;
+        }
+
+        .thumbnail {
+          width: 70px;
+          height: 52px;
+        }
+
+        .gallery-nav {
+          gap: 15px;
+        }
+
+        .gallery-prev,
+        .gallery-next {
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+        }
+
+        .gallery-counter {
+          font-size: 14px;
+          min-width: 60px;
+        }
+
+        .modal-close {
+          top: 16px;
+          right: 16px;
+          font-size: 32px;
+        }
+      }
+
+      .confirmation-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(7, 26, 45, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        padding: 20px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .confirmation-modal.open {
+        display: flex;
+      }
+
+      .confirmation-content {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        padding: 32px;
+        max-width: 500px;
+        width: 100%;
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .confirmation-content h2 {
+        color: var(--azul);
+        margin-bottom: 12px;
+        font-size: 1.4rem;
+      }
+
+      .confirmation-content p {
+        color: #666;
+        margin-bottom: 24px;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .confirmation-content .property-title {
+        color: var(--vermelho);
+        font-weight: 700;
+        word-break: break-word;
+      }
+
+      .confirmation-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+      }
+
+      .confirmation-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        min-width: 120px;
+      }
+
+      .confirmation-btn-confirm {
+        background: var(--vermelho);
+        color: var(--branco);
+      }
+
+      .confirmation-btn-confirm:hover {
+        background: #b0151c;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(209, 26, 33, 0.3);
+      }
+
+      .confirmation-btn-cancel {
+        background: #e2eaf3;
+        color: var(--azul);
+      }
+
+      .confirmation-btn-cancel:hover {
+        background: #d7dfe9;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 480px) {
+        .gallery-thumbnails {
+          gap: 5px;
+          height: 60px;
+        }
+
+        .thumbnail {
+          width: 60px;
+          height: 45px;
+        }
+
+        .gallery-prev,
+        .gallery-next {
+          width: 35px;
+          height: 35px;
+          font-size: 14px;
+        }
+
+        .gallery-counter {
+          font-size: 12px;
+          min-width: 50px;
+        }
+
+        .gallery-main {
+          max-height: 50vh;
+        }
+
+        .carousel-indicators {
+          bottom: 8px;
+          gap: 6px;
+        }
+
+        .carousel-dot {
+          width: 6px;
+          height: 6px;
+        }
+
+        .carousel-dot.active {
+          width: 20px;
+        }
+
+        .confirmation-content {
+          padding: 24px;
+        }
+
+        .confirmation-content h2 {
+          font-size: 1.2rem;
+        }
+
+        .confirmation-buttons {
+          flex-direction: column-reverse;
+        }
+
+        .confirmation-btn {
+          min-width: unset;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo-container">
+            <div class="logo-placeholder">
+              <img
+                src="logohabileads.png"
+                alt="HABILEADS"
+                style="height: 50px; margin-right: 10px"
+              />
+              HABILEADS
+            </div>
+          </div>
+          <div class="menu-toggle" id="mobile-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <nav id="nav">
+            <ul>
+              <li><a href="#home">Início</a></li>
+              <li><a href="#properties">Imóveis</a></li>
+              <li><a href="#about">Sobre</a></li>
+              <li><a href="#concept">Conceito</a></li>
+              <li><a href="#contact">Contato</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <div class="container">
+        <h1>Transformando sonhos em endereços</h1>
+        <p>
+          A HABILEADS atrai as melhores oportunidades do mercado imobiliário
+          para você
+        </p>
+        <a href="#properties" class="btn">Ver Imóveis</a>
+      </div>
+    </section>
+
+    <!-- Imóveis -->
+    <section class="properties" id="properties">
+      <div class="container">
+        <div class="section-title">
+          <h2>Imóveis em Destaque</h2>
+          <p>Confira nossas melhores oportunidades do mercado</p>
+        </div>
+        <div class="properties-grid">
+          <button
+            class="carousel-nav-btn prev"
+            id="carousel-prev"
+            aria-label="Anterior"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="properties-carousel-wrapper">
+            <div class="properties-carousel" id="properties-carousel">
+              <!-- APARTAMENTOS -->
+              <div class="property-card">
+                <div
+                  class="property-carousel"
+                  data-group="apartamentojardimnovasantapaula"
+                >
+                  <div
+                    class="carousel-container"
+                    id="carousel-apartamentojardimnovasantapaula"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apartamentojardimnovasantapaula"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO À VENDA – JARDIM NOVA SANTA PAULA</h3>
+                  <div class="price">R$ 260.000,00</div>
+                  <p>COD: 158</p>
+                  <ul>
+                    <li>✅ 63m² de área privativa</li>
+                    <li>🛏️ 3 dormitórios (1 suíte)</li>
+                    <li>🛋️ Sala de estar e jantar</li>
+                    <li>🍳 Cozinha funcional</li>
+                    <li>🚿 Banheiro social</li>
+                    <li>🧺 Lavanderia</li>
+                    <li>🚗 1 vaga de garagem</li>
+                    <li>📍 Perto de escolas, farmácias e mercado</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apartamentojardimnovasantapaula"
+                    data-img="APARTAMENTOJARDIM NOVA SANTA PAULA(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div
+                  class="property-carousel"
+                  data-group="apartamentoflordeliz"
+                >
+                  <div
+                    class="carousel-container"
+                    id="carousel-apartamentoflordeliz"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apartamentoflordeliz"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO TÉRREO – FLOR DE LIZ</h3>
+                  <div class="price">R$ 360.000,00</div>
+                  <p>COD: 191</p>
+                  <ul>
+                    <li>✅ 2 dormitórios</li>
+                    <li>🛋️ Sala de estar aconchegante</li>
+                    <li>🍳 Cozinha funcional</li>
+                    <li>🌿 Térreo com quintal enorme</li>
+                    <li>🧺 Lavanderia</li>
+                    <li>🛡️ Condomínio com segurança</li>
+                    <li>🐾 Perfeito para pets</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apartamentoflordeliz"
+                    data-img="Apartamento_FlordeLiz(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div
+                  class="property-carousel"
+                  data-group="apartamentodasaraucarias"
+                >
+                  <div
+                    class="carousel-container"
+                    id="carousel-apartamentodasaraucarias"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apartamentodasaraucarias"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO BOSQUE DAS ARAUCÁRIAS – JARDIM ALVORADA</h3>
+                  <div class="price">R$ 380.000,00</div>
+                  <p>COD: 232</p>
+                  <ul>
+                    <li>✅ 54m² bem distribuídos</li>
+                    <li>🛏️ 2 dormitórios (1 suíte)</li>
+                    <li>🚿 2 banheiros com box</li>
+                    <li>🍳 Cozinha com armários planejados</li>
+                    <li>🧺 Lavanderia com planejados</li>
+                    <li>🖥️ Espaço ideal para home office</li>
+                    <li>🪞 Banheiros planejados</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apartamentodasaraucarias"
+                    data-img="ApartamentodasAraucárias(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="apjardimgilbertoni">
+                  <div
+                    class="carousel-container"
+                    id="carousel-apjardimgilbertoni"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apjardimgilbertoni"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO À VENDA – JARDIM GILBERTONI</h3>
+                  <div class="price">R$ 430.000,00</div>
+                  <p>COD: 173</p>
+                  <ul>
+                    <li>✅ 80m² bem aproveitados</li>
+                    <li>🛏️ 3 dormitórios (1 suíte)</li>
+                    <li>🍳 Cozinha ampla</li>
+                    <li>🛋️ Sala de estar aconchegante</li>
+                    <li>🌅 Varanda</li>
+                    <li>🚗 2 vagas de garagem</li>
+                    <li>☀️ Ótima iluminação natural</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apjardimgilbertoni"
+                    data-img="Ap_JardimGilbertoni(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="aptorresitalia">
+                  <div
+                    class="carousel-container"
+                    id="carousel-aptorresitalia"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-aptorresitalia"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO MOBILIADO – TORRES ITÁLIA</h3>
+                  <div class="price">R$ 530.000,00</div>
+                  <p>COD: 224</p>
+                  <ul>
+                    <li>✅ 3 dormitórios</li>
+                    <li>🛋️ Sala de estar aconchegante</li>
+                    <li>🍳 Cozinha completa com armários</li>
+                    <li>🌅 Varanda com vista panorâmica</li>
+                    <li>🪑 Mobiliado – pronto pra morar!</li>
+                    <li>🚗 1 vaga de garagem coberta</li>
+                    <li>🏊 Piscina e espaço gourmet</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="aptorresitalia"
+                    data-img="Ap_mobiliadoTorresItália(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="apartamentovilanery">
+                  <div
+                    class="carousel-container"
+                    id="carousel-apartamentovilanery"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apartamentovilanery"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO MOBILIADO – VILA NERY</h3>
+                  <div class="price">R$ 470.000,00</div>
+                  <p>COD: 212</p>
+                  <ul>
+                    <li>✅ 2 dormitórios com armários planejados</li>
+                    <li>🛋️ Sala de TV e jantar integradas</li>
+                    <li>🍳 Cozinha ampla com armários</li>
+                    <li>🚿 Banheiros modernos</li>
+                    <li>🚗 1 vaga coberta no subsolo</li>
+                    <li>✨ Acabamento de qualidade</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apartamentovilanery"
+                    data-img="Apartamento_VilaNery(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="apartamentoamplo">
+                  <div
+                    class="carousel-container"
+                    id="carousel-apartamentoamplo"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apartamentoamplo"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>SOBRADO NO JARDIM BICÃO</h3>
+                  <div class="price">R$ 690.000,00</div>
+                  <p>COD: 196</p>
+                  <ul>
+                    <li>✅ 3 dormitórios (1 suíte com banheira)</li>
+                    <li>🛋️ Sala ampla e iluminada</li>
+                    <li>🌿 Jardim de inverno</li>
+                    <li>🍳 Cozinha integrada à copa</li>
+                    <li>🚻 Lavabo moderno</li>
+                    <li>🍖 Área gourmet com churrasqueira</li>
+                    <li>⚡ Instalação elétrica de primeira</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apartamentoamplo"
+                    data-img="Apartamento amplo(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div
+                  class="property-carousel"
+                  data-group="apresidencialmonteathos"
+                >
+                  <div
+                    class="carousel-container"
+                    id="carousel-apresidencialmonteathos"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-apresidencialmonteathos"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APTO – Res. Monte Athos</h3>
+                  <div class="price">R$ 180.000,00</div>
+                  <p>COD: 226</p>
+                  <ul>
+                    <li>✅ 2 dormitórios com piso laminado</li>
+                    <li>🛋️ Sala ampla com sanca de gesso</li>
+                    <li>🍳 Cozinha com bancada e armário novos</li>
+                    <li>🚿 Banheiro com box, armário e espelho</li>
+                    <li>💡 Iluminação 100% em LED</li>
+                    <li>🏦 Aceita financiamento</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="apresidencialmonteathos"
+                    data-img="ApResidencialMonteAthos(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <!-- CASAS -->
+              <div class="property-card">
+                <div class="property-carousel" data-group="casajardimaraucaria">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casajardimaraucaria"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casajardimaraucaria"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – Jd. Araucária</h3>
+                  <div class="price">R$ 277.000,00</div>
+                  <p>COD: 123</p>
+                  <ul>
+                    <li>✅ 2 dormitórios bem distribuídos</li>
+                    <li>🛋️ Sala de estar aconchegante</li>
+                    <li>🍳 Cozinha planejada</li>
+                    <li>🚗 2 vagas de garagem</li>
+                    <li>🧺 Lavanderia prática</li>
+                    <li>📍 Bairro tranquilo e valorizado</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casajardimaraucaria"
+                    data-img="Casa_JardimAraucária(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casaaracy2">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casaaracy2"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casaaracy2"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – ARACY 2</h3>
+                  <div class="price">R$ 215.000,00</div>
+                  <p>COD: 186</p>
+                  <ul>
+                    <li>✅ 2 dormitórios</li>
+                    <li>🚿 2 banheiros</li>
+                    <li>🛋️ Sala ampla</li>
+                    <li>🍳 Cozinha funcional</li>
+                    <li>🧺 Lavanderia</li>
+                    <li>🚗 Garagem coberta</li>
+                    <li>📍 Em frente à escola e creche</li>
+                    <li>📑 Documentação regularizada</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casaaracy2"
+                    data-img="Casa_ARACY_2(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casajardimipanema">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casajardimipanema"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casajardimipanema"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – Jd. Ipanema</h3>
+                  <div class="price">R$ 590.000,00</div>
+                  <p>COD: 01</p>
+                  <ul>
+                    <li>✅ 2 dormitórios (1 suíte com closet)</li>
+                    <li>🍳 Cozinha planejada</li>
+                    <li>🌳 Quintal espaçoso</li>
+                    <li>🚗 2 vagas cobertas</li>
+                    <li>✨ Pronta pra morar</li>
+                    <li>📍 Bairro tranquilo e valorizado</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casajardimipanema"
+                    data-img="Casa_JardimIpanema(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casajardimitamaraty">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casajardimitamaraty"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casajardimitamaraty"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – Jd. Itamaraty</h3>
+                  <div class="price">R$ 680.000,00</div>
+                  <p>COD: 230</p>
+                  <ul>
+                    <li>✅ 3 dormitórios (1 suíte)</li>
+                    <li>🛋️ Sala de estar e jantar</li>
+                    <li>🍳 Cozinha ampla e funcional</li>
+                    <li>🍖 Área gourmet com churrasqueira</li>
+                    <li>🏊 Piscina</li>
+                    <li>📐 250m² terreno | 200m² const.</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casajardimitamaraty"
+                    data-img="Casa_JardimItamaraty(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casaparquefehr">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casaparquefehr"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casaparquefehr"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – Parque Fehr</h3>
+                  <div class="price">R$ 848.000,00</div>
+                  <p>COD: 210</p>
+                  <ul>
+                    <li>✅ 3 dormitórios (1 suíte master)</li>
+                    <li>🛋️ Sala 3 ambientes</li>
+                    <li>🖥️ Escritório</li>
+                    <li>🍳 Cozinha planejada</li>
+                    <li>🚗 3 vagas cobertas</li>
+                    <li>🏊 Piscina com aquecimento solar</li>
+                    <li>🍖 Churrasqueira e forno a lenha</li>
+                    <li>📐 199m² const. | 250m² terreno</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casaparquefehr"
+                    data-img="Casa_ParqueFehr(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casamoderna">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casamoderna"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casamoderna"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa Moderna</h3>
+                  <div class="price">R$ 1.250.000,00</div>
+                  <p>COD: 203</p>
+                  <ul>
+                    <li>✅ 3 suítes (master com planejados)</li>
+                    <li>🍳 Cozinha gourmet equipada</li>
+                    <li>🚿 Banheiros completos</li>
+                    <li>🌳 Quintal com jardinagem pronta</li>
+                    <li>💡 Iluminação completa</li>
+                    <li>🚪 Portas anti-impacto</li>
+                    <li>📐 153m² const. | 240m² terreno</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casamoderna"
+                    data-img="Casa_Moderna(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casadamha">
+                  <div class="carousel-container" id="carousel-casadamha"></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casadamha"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – Damha I</h3>
+                  <div class="price">R$ 1.490.000,00</div>
+                  <p>COD: 229</p>
+                  <ul>
+                    <li>✅ 3 dormitórios (2 suítes)</li>
+                    <li>🛋️ Sala ampla e integrada</li>
+                    <li>🍖 Área gourmet com churrasqueira</li>
+                    <li>🏊 Piscina privativa</li>
+                    <li>🌅 Varanda com vista livre</li>
+                    <li>📐 220m² const. | 270m² terreno</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casadamha"
+                    data-img="Casa_Damha_I(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="casaswisspark">
+                  <div
+                    class="carousel-container"
+                    id="carousel-casaswisspark"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-casaswisspark"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Casa – Swiss Park</h3>
+                  <div class="price">R$ 1.970.000,00</div>
+                  <p>COD: 233</p>
+                  <ul>
+                    <li>✅ 3 suítes espaçosas</li>
+                    <li>🍳 Cozinha funcional e moderna</li>
+                    <li>🛋️ 3 salas (estar, jantar e TV)</li>
+                    <li>🍖 Área de churrasco</li>
+                    <li>🚗 6 vagas (2 cobertas)</li>
+                    <li>🏊 Piscina no condomínio</li>
+                    <li>🎾 Quadra de tênis</li>
+                    <li>📐 267m² const. | 490m² terreno</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="casaswisspark"
+                    data-img="Casa_SwissPark(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <!-- SOBRADOS -->
+              <div class="property-card">
+                <div
+                  class="property-carousel"
+                  data-group="sobradocondominioparquefaber"
+                >
+                  <div
+                    class="carousel-container"
+                    id="carousel-sobradocondominioparquefaber"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-sobradocondominioparquefaber"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>Sobrado – Cond. Parque Faber IV</h3>
+                  <div class="price">Consulte</div>
+                  <p>COD: 189</p>
+                  <ul>
+                    <li>✅ 3 suítes</li>
+                    <li>🏗️ Pé direito duplo</li>
+                    <li>🛋️ Sala de TV + jantar</li>
+                    <li>🖥️ Escritório (ou 4º dorm.)</li>
+                    <li>🚻 Lavabo interno e externo</li>
+                    <li>🏊 Piscina privativa</li>
+                    <li>📐 276m² const. | 396m² terreno</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="sobradocondominioparquefaber"
+                    data-img="SOBRADO_CONDOMÍNIOPARQUEFABER_IV(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="recantosabia">
+                  <div
+                    class="carousel-container"
+                    id="carousel-recantosabia"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-recantosabia"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>RECANTO DO SABIÁ | OPORTUNIDADE</h3>
+                  <div class="price">R$ 235.000,00</div>
+                  <ul>
+                    <li>✅ 2 lotes de 10x25 cada</li>
+                    <li>📑 Lotes quitados</li>
+                    <li>📍 Excelente localização</li>
+                    <li>🏗️ Ideal p/ construção alto padrão</li>
+                    <li>💰 Venda juntos ou separados</li>
+                  </ul>
+                  <div class="detail-info">
+                    📞 Entre em contato para mais informações!
+                  </div>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="recantosabia"
+                    data-img="RecantoSabia(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="parque_sabara">
+                  <div
+                    class="carousel-container"
+                    id="carousel-parque_sabara"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-parque_sabara"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>OPORTUNIDADE NO SABARÁ</h3>
+                  <div class="price">R$ 320.000,00</div>
+                  <ul>
+                    <li>✅ 2 dormitórios</li>
+                    <li>🪟 Sacada envidraçada</li>
+                    <li>🪑 Móveis planejados</li>
+                    <li>🚗 1 vaga de garagem</li>
+                    <li>🏊 Condomínio clube</li>
+                    <li>🏦 Aceita financiamento</li>
+                  </ul>
+                  <div class="detail-info">
+                    📞 Entre em contato para mais informações!
+                  </div>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="parque_sabara"
+                    data-img="Parque_Sabara(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="santa_felicia">
+                  <div
+                    class="carousel-container"
+                    id="carousel-santa_felicia"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-santa_felicia"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>CASA NO SANTA FELÍCIA</h3>
+                  <div class="price">R$ 900.000,00</div>
+                  <p>COD: 192</p>
+                  <ul>
+                    <li>✅ 2 dormitórios (1 suíte)</li>
+                    <li>🏢 2 salões comerciais</li>
+                    <li>🌳 Quintal e churrasqueira</li>
+                    <li>📐 220m² de construção</li>
+                    <li>🚗 Garagem para 5 carros</li>
+                    <li>💰 Possibilidade de renda extra</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="santa_felicia"
+                    data-img="Santa_Felicia(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="pacaembu">
+                  <div class="carousel-container" id="carousel-pacaembu"></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-pacaembu"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>GALPÃO NO JARDIM PACAEMBU</h3>
+                  <div class="price">R$ 490.000,00</div>
+                  <ul>
+                    <li>✅ 356m² de terreno</li>
+                    <li>🏭 135m² de galpão</li>
+                    <li>🌳 221m² de área externa</li>
+                    <li>🖥️ Escritório</li>
+                    <li>🚿 Banheiro</li>
+                    <li>📦 Ideal p/ logística e comércio</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="pacaembu"
+                    data-img="Pacaembu(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="valparaiso">
+                  <div
+                    class="carousel-container"
+                    id="carousel-valparaiso"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-valparaiso"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>CHÁCARA NO ENCONTRO VALPARAÍSO</h3>
+                  <div class="price">R$ 2.800.000,00</div>
+                  <ul>
+                    <li>✅ 9.300m² de área total</li>
+                    <li>🏠 3 casas</li>
+                    <li>🐟 Tanque de tilápias</li>
+                    <li>🎉 Lazer completo</li>
+                    <li>📑 Escritura registrada</li>
+                    <li>🌳 Propriedade rústica</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="valparaiso"
+                    data-img="ValParaiso(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="greenview">
+                  <div class="carousel-container" id="carousel-greenview"></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-greenview"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO | GREEN VIEW</h3>
+                  <div class="price">R$ 450.000,00</div>
+                  <p>COD: 213</p>
+                  <ul>
+                    <li>✅ 2 dormitórios (1 suíte)</li>
+                    <li>🪟 Sacada</li>
+                    <li>🏢 12º andar</li>
+                    <li>🪑 Móveis planejados</li>
+                    <li>🚗 1 vaga de garagem</li>
+                    <li>🌆 Vista privilegiada</li>
+                  </ul>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="greenview"
+                    data-img="GreenView(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="edificio_sineu">
+                  <div
+                    class="carousel-container"
+                    id="carousel-edificio_sineu"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-edificio_sineu"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>APARTAMENTO À VENDA | EDIFÍCIO SINEU – CENTRO</h3>
+                  <div class="price">R$ 270.000,00</div>
+                  <p>COD: 322</p>
+                  <ul>
+                    <li>✅ 6º andar</li>
+                    <li>🪑 Móveis planejados</li>
+                    <li>🏗️ Piso em porcelanato</li>
+                    <li>✨ Acabamento em gesso e sanca</li>
+                    <li>🪟 Sacada</li>
+                    <li>🚗 Vaga de garagem</li>
+                    <li>📍 Centro – praticidade total</li>
+                  </ul>
+                  <div class="detail-info">
+                    📞 Entre em contato para mais informações!
+                  </div>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="edificio_sineu"
+                    data-img="Edificio_Sineu(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="mont_soleil">
+                  <div
+                    class="carousel-container"
+                    id="carousel-mont_soleil"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-mont_soleil"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>ÚLTIMO ANDAR + VARANDA GOURMET | MONT SOLEIL</h3>
+                  <div class="price">R$ 320.000,00</div>
+                  <ul>
+                    <li>✅ 50m²</li>
+                    <li>🏢 17º andar</li>
+                    <li>🛏️ 2 dormitórios suíte</li>
+                    <li>🍖 Varanda gourmet</li>
+                    <li>🔥 Churrasqueira</li>
+                  </ul>
+                  <div class="detail-info">
+                    📞 Entre em contato para mais informações!
+                  </div>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="mont_soleil"
+                    data-img="Mont_Soleil(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="mont_everest">
+                  <div
+                    class="carousel-container"
+                    id="carousel-mont_everest"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-mont_everest"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>MONTE EVEREST | SÃO CARLOS/SP</h3>
+                  <div class="price">R$ 195.000,00</div>
+                  <ul>
+                    <li>✅ 45m²</li>
+                    <li>🏢 3º andar</li>
+                    <li>🛏️ 2 dormitórios</li>
+                    <li>🏊 Piscina</li>
+                    <li>🛡️ Portaria 24h</li>
+                    <li>🏦 Aceita financiamento</li>
+                  </ul>
+                  <div class="detail-info">
+                    📞 Entre em contato para mais informações!
+                  </div>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="mont_everest"
+                    data-img="Mont_Everest(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+
+              <div class="property-card">
+                <div class="property-carousel" data-group="jardim_paulistano">
+                  <div
+                    class="carousel-container"
+                    id="carousel-jardim_paulistano"
+                  ></div>
+                  <div
+                    class="carousel-indicators"
+                    id="indicators-jardim_paulistano"
+                  ></div>
+                </div>
+                <div class="property-info">
+                  <h3>JARDIM PAULISTANO | SÃO CARLOS/SP</h3>
+                  <div class="price">R$ 180.000,00</div>
+                  <ul>
+                    <li>✅ 1º andar</li>
+                    <li>🛏️ 2 dormitórios</li>
+                    <li>🎓 Próximo USP/UFSCar</li>
+                    <li>🏊 Piscina</li>
+                    <li>📈 Ótimo para investimento</li>
+                  </ul>
+                  <div class="detail-info">
+                    📞 Entre em contato para mais informações!
+                  </div>
+                  <button
+                    class="btn btn-secondary btn-fullscreen"
+                    data-group="jardim_paulistano"
+                    data-img="Jardim_Paulistano(1).jpeg"
+                  >
+                    Ver Mais Imagens
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            class="carousel-nav-btn next"
+            id="carousel-next"
+            aria-label="Próximo"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sobre -->
+    <section class="about" id="about">
+      <div class="container">
+        <div class="section-title">
+          <h2>Sobre a HABILEADS</h2>
+          <p>Conheça nossa história e valores</p>
+        </div>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              Fundada em 2021, a HABILEADS surgiu com a missão de revolucionar o
+              mercado imobiliário através de uma abordagem inovadora para
+              captação de oportunidades. Em pouco tempo, nos tornamos referência
+              no setor, unindo tecnologia, expertise e relacionamento humano.
+            </p>
+            <p>
+              Nossa equipe é composta por corretores especializados e
+              comprometidos em oferecer o melhor atendimento personalizado,
+              entendendo suas necessidades e superando expectativas.
+            </p>
+            <p>
+              Valorizamos a confiança que nossos clientes depositam em nosso
+              trabalho e nos esforçamos para manter relacionamentos duradouros
+              baseados na ética e na excelência de nossos serviços.
+            </p>
+          </div>
+          <div class="about-image"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conceito -->
+    <section class="concept" id="concept">
+      <div class="container">
+        <div class="section-title">
+          <h2>Nosso Conceito</h2>
+          <p>A arte de atrair oportunidades</p>
+        </div>
+        <div class="concept-content">
+          <i class="fas fa-magnet magnet-icon"></i>
+          <h3>O Poder da Atração</h3>
+          <p>
+            Imagine uma empresa que transforma o conceito de captação de leads
+            em algo verdadeiramente magnético. Essa é a HABILEADS, onde cada
+            interação se torna uma oportunidade, e cada oportunidade se torna um
+            sucesso.
+          </p>
+          <p>
+            O símbolo da nossa marca diz tudo. Um imã, representando a poderosa
+            força de atração que exercemos sobre oportunidades valiosas. Não
+            somos apenas especialistas em capturar leads, somos referência na
+            arte de atrair os leads certos no momento certo.
+          </p>
+
+          <div class="h-meaning">
+            <h4>A Essência do "H"</h4>
+            <p>
+              O "H" no nosso nome é mais do que apenas uma letra. Ele simboliza
+              a nossa abordagem <strong>Hábil e Honesta</strong> para a captação
+              de leads. Habilidade para identificar as melhores oportunidades e
+              honestidade para construir relações transparentes e duradouras com
+              nossos clientes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contato -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-title">
+          <h2>Entre em Contato</h2>
+          <p>Estamos à disposição para atendê-lo</p>
+        </div>
+        <div class="contact-content">
+          <div class="address">
+            <p>
+              <i class="fas fa-map-marker-alt"></i> R. Padre Teixeira, Centro,
+              São Carlos, Brazil
+            </p>
+          </div>
+          <div class="social-media">
+            <a href="#" id="whatsapp-link" class="social-icon">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="#" id="gmail-link" class="social-icon">
+              <i class="far fa-envelope"></i>
+            </a>
+            <a
+              href="https://www.instagram.com/habileads/"
+              id="instagram-link"
+              class="social-icon"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <img
+              src="logohabileads.png"
+              alt="HABILEADS"
+              style="height: 40px; margin-right: 10px"
+            />
+            HABILEADS
+          </div>
+          <p>
+            &copy; 2025 HABILEADS - Feito por
+            <a
+              href="https://www.instagram.com/_samusantana_/"
+              target="_blank"
+              rel="noreferrer noopener"
+              >Samuel Santana</a
+            >
+            - Todos os direitos reservados
+          </p>
+          <p class="footer-info">
+            Desde 2021 transformando o mercado imobiliário com habilidade e
+            honestidade
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Admin -->
+    <button id="admin-trigger" class="admin-trigger" type="button">
+      Admin
+    </button>
+
+    <div id="admin-auth" class="admin-auth">
+      <div class="admin-box">
+        <div class="admin-box-header">
+          <h3>Área Administrativa</h3>
+          <button
+            type="button"
+            id="admin-auth-close"
+            class="admin-close"
+            aria-label="Fechar"
+          >
+            Fechar
+          </button>
+        </div>
+        <div class="field">
+          <label for="admin-password">Senha de acesso</label>
+          <input
+            id="admin-password"
+            type="password"
+            placeholder="Digite a senha"
+          />
+        </div>
+        <button type="button" id="admin-login-btn" class="submit-btn">
+          Entrar
+        </button>
+      </div>
+    </div>
+
+    <div id="admin-panel" class="admin-panel">
+      <div class="admin-panel-box">
+        <div class="admin-panel-header">
+          <h3>Gerenciar imóveis</h3>
+          <button type="button" id="admin-close-panel" class="admin-close">
+            Fechar
+          </button>
+        </div>
+
+        <form id="property-form" class="admin-form">
+          <input type="hidden" id="property-id" />
+          <div class="admin-form-row">
+            <div class="field">
+              <label for="property-title">Título do imóvel</label>
+              <input
+                id="property-title"
+                type="text"
+                placeholder="Ex.: Casa em Jardim..."
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="property-price">Valor</label>
+              <input
+                id="property-price"
+                type="text"
+                placeholder="Ex.: R$ 320.000,00"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="property-description">Descrição</label>
+            <textarea
+              id="property-description"
+              rows="4"
+              placeholder="Descreva o imóvel, características e destaque..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label for="property-image">Imagens do imóvel</label>
+            <div id="property-image-dropzone" class="image-dropzone">
+              <input
+                id="property-image"
+                type="file"
+                accept="image/*"
+                multiple
+              />
+            </div>
+            <small style="display: block; color: #666; margin-top: 6px"
+              >Arraste e solte as fotos aqui ou use o seletor acima. Você pode
+              selecionar várias fotos para a mesma propriedade.</small
+            >
+            <img
+              id="property-image-preview"
+              class="admin-preview"
+              alt="Pré-visualização da imagem"
+            />
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="submit" class="submit-btn">Salvar imóvel</button>
+            <button type="button" id="cancel-edit" class="admin-cancel-btn">
+              Cancelar
+            </button>
+          </div>
+        </form>
+
+        <div id="admin-property-list" class="admin-list"></div>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <div
+      id="modal-fullscreen"
+      class="modal-fullscreen"
+      aria-modal="true"
+      role="dialog"
+      aria-label="Galeria de imagens"
+    ></div>
+
+    <div
+      id="confirmation-modal"
+      class="confirmation-modal"
+      role="alertdialog"
+      aria-modal="true"
+    >
+      <div class="confirmation-content">
+        <h2 id="confirmation-title">Confirmar ação</h2>
+        <p id="confirmation-message">Tem certeza que deseja continuar?</p>
+        <div class="confirmation-buttons">
+          <button
+            type="button"
+            id="confirmation-cancel"
+            class="confirmation-btn confirmation-btn-cancel"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            id="confirmation-confirm"
+            class="confirmation-btn confirmation-btn-confirm"
+          >
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VLibras -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
+    </script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <script>
+      // =============================================
+      // CONFIGURAÇÃO DO FIREBASE
+      // =============================================
+      const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyDvAkUHbtTRrBkc-SqaGZ4F9UqbAZJmeGc",
+        authDomain: "habileads-f8abe.firebaseapp.com",
+        projectId: "habileads-f8abe",
+        storageBucket: "habileads-f8abe.firebasestorage.app",
+        messagingSenderId: "177099064785",
+        appId: "1:177099064785:web:d613ea9228f7b9e5d10cf0",
+      };
+
+      const firebaseApp =
+        typeof firebase !== "undefined" && firebase.apps && firebase.apps.length
+          ? firebase.app()
+          : typeof firebase !== "undefined"
+            ? firebase.initializeApp(FIREBASE_CONFIG)
+            : null;
+
+      const db = firebaseApp ? firebase.firestore() : null;
+
+      const ADMIN_PASSWORD = "habileads2025";
+      const PROPERTY_STORAGE_KEY = "habileads_property_cards";
+      const ADMIN_SESSION_KEY = "habileads_admin_logged";
+      let propertyCache = [];
+
+      // =============================================
+      // FUNÇÕES AUXILIARES
+      // =============================================
+      function isCloudAvailable() {
+        return !!db;
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function getLegacyStoredProperties() {
+        try {
+          const saved = localStorage.getItem(PROPERTY_STORAGE_KEY);
+          const cards = saved ? JSON.parse(saved) : [];
+          const normalized = cards.map((card) => {
+            if (!card || typeof card !== "object") return card;
+            const group = card.group || "";
+            const fallbackImage =
+              group && imageGroups[group] && imageGroups[group][0]
+                ? imageGroups[group][0]
+                : "";
+            if (!card.image && fallbackImage) {
+              return { ...card, image: fallbackImage };
+            }
+            return card;
+          });
+          if (JSON.stringify(normalized) !== JSON.stringify(cards)) {
+            localStorage.setItem(
+              PROPERTY_STORAGE_KEY,
+              JSON.stringify(normalized),
+            );
+          }
+          return normalized;
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveLegacyStoredProperties(cards) {
+        const normalized = cards.map((card) => {
+          if (!card || typeof card !== "object") return card;
+          const group = card.group || "";
+          if (
+            !card.image &&
+            group &&
+            imageGroups[group] &&
+            imageGroups[group][0]
+          ) {
+            return { ...card, image: imageGroups[group][0] };
+          }
+          return card;
+        });
+        localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(normalized));
+      }
+
+      function getStoredProperties() {
+        if (propertyCache.length) {
+          return propertyCache;
+        }
+        return getLegacyStoredProperties();
+      }
+
+      function normalizeCardImages(card, fallbackImage = "") {
+        const sourceImages = Array.isArray(card?.images)
+          ? card.images.filter(Boolean)
+          : [];
+        const singleImage = card?.image ? [card.image] : [];
+        const list = sourceImages.length ? sourceImages : singleImage;
+        const image = list[0] || card?.image || fallbackImage || "";
+        return {
+          image,
+          images: list.length ? list : image ? [image] : [],
+        };
+      }
+
+      function getPropertyFallbackImage(card = {}) {
+        if (card.image) return card.image;
+        if (
+          card.group &&
+          imageGroups[card.group] &&
+          imageGroups[card.group][0]
+        ) {
+          return imageGroups[card.group][0];
+        }
+        return "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+      }
+
+      function showConfirmationModal(
+        title,
+        message,
+        confirmText = "Confirmar",
+        cancelText = "Cancelar",
+      ) {
+        return new Promise((resolve) => {
+          const modal = document.getElementById("confirmation-modal");
+          const titleEl = document.getElementById("confirmation-title");
+          const messageEl = document.getElementById("confirmation-message");
+          const confirmBtn = document.getElementById("confirmation-confirm");
+          const cancelBtn = document.getElementById("confirmation-cancel");
+
+          titleEl.textContent = title;
+          messageEl.innerHTML = message;
+          confirmBtn.textContent = confirmText;
+          cancelBtn.textContent = cancelText;
+
+          const handleConfirm = () => {
+            modal.classList.remove("open");
+            confirmBtn.removeEventListener("click", handleConfirm);
+            cancelBtn.removeEventListener("click", handleCancel);
+            resolve(true);
+          };
+
+          const handleCancel = () => {
+            modal.classList.remove("open");
+            confirmBtn.removeEventListener("click", handleConfirm);
+            cancelBtn.removeEventListener("click", handleCancel);
+            resolve(false);
+          };
+
+          confirmBtn.addEventListener("click", handleConfirm);
+          cancelBtn.addEventListener("click", handleCancel);
+          modal.classList.add("open");
+        });
+      }
+
+      // =============================================
+      // FUNÇÕES DO FIREBASE
+      // =============================================
+      async function syncPropertiesToCloud(cards) {
+        if (!isCloudAvailable()) return cards;
+
+        const normalized = cards.map((card) => {
+          if (!card || typeof card !== "object") return card;
+          return {
+            ...card,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          };
+        });
+
+        try {
+          const snapshot = await db.collection("properties").get();
+          const existingIds = new Set(snapshot.docs.map((doc) => doc.id));
+          const incomingIds = new Set(normalized.map((card) => card.id));
+
+          await Promise.all(
+            normalized.map((card) => {
+              return db
+                .collection("properties")
+                .doc(card.id)
+                .set(
+                  {
+                    ...card,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                  },
+                  { merge: true },
+                );
+            }),
+          );
+
+          const deletions = [...existingIds].filter(
+            (id) => !incomingIds.has(id),
+          );
+          await Promise.all(
+            deletions.map((id) => db.collection("properties").doc(id).delete()),
+          );
+
+          propertyCache = normalized;
+          saveLegacyStoredProperties(normalized);
+          return normalized;
+        } catch (error) {
+          console.error(
+            "Erro ao sincronizar os imóveis com o Firebase:",
+            error,
+          );
+          return cards;
+        }
+      }
+
+      async function saveStoredProperties(cards) {
+        const normalized = cards.map((card) => {
+          if (!card || typeof card !== "object") return card;
+          const group = card.group || "";
+          if (
+            !card.image &&
+            group &&
+            imageGroups[group] &&
+            imageGroups[group][0]
+          ) {
+            return { ...card, image: imageGroups[group][0] };
+          }
+          return card;
+        });
+
+        propertyCache = normalized;
+        saveLegacyStoredProperties(normalized);
+
+        if (isCloudAvailable()) {
+          try {
+            console.log("📤 Salvando no Firebase...");
+            await syncPropertiesToCloud(normalized);
+            console.log("✅ Salvo no Firebase com sucesso!");
+            return normalized;
+          } catch (error) {
+            console.error("❌ Erro ao salvar no Firebase:", error);
+            alert("Erro ao salvar no Firebase. Os dados foram salvos localmente.");
+            return normalized;
+          }
+        }
+
+        return normalized;
+      }
+
+      // =============================================
+      // CARREGAMENTO DE DADOS DO FIREBASE
+      // =============================================
+      async function loadFirebaseDataOnStart() {
+        console.log("🔄 Carregando dados do Firebase ao iniciar...");
+
+        if (!isCloudAvailable()) {
+          console.warn("⚠️ Firebase não disponível, usando dados locais");
+          propertyCache = getLegacyStoredProperties();
+          renderDynamicPropertyCards();
+          renderAdminList();
+          return;
+        }
+
+        try {
+          const snapshot = await db
+            .collection("properties")
+            .orderBy("updatedAt", "desc")
+            .get({ source: "server" });
+
+          const cards = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          if (cards.length > 0) {
+            console.log(`✅ ${cards.length} imóveis carregados do Firebase`);
+            propertyCache = cards;
+            saveLegacyStoredProperties(cards);
+          } else {
+            console.log("📂 Nenhum imóvel no Firebase, usando dados locais");
+            propertyCache = getLegacyStoredProperties();
+          }
+
+          renderDynamicPropertyCards();
+          renderAdminList();
+          initCarousels();
+        } catch (error) {
+          console.error("❌ Erro ao carregar do Firebase:", error);
+          propertyCache = getLegacyStoredProperties();
+          renderDynamicPropertyCards();
+          renderAdminList();
+        }
+      }
+
+      function listenToRealTimeUpdates() {
+        if (!isCloudAvailable()) {
+          console.warn("⚠️ Firebase não disponível, sem escuta em tempo real");
+          return;
+        }
+
+        console.log("📡 Escutando mudanças em tempo real...");
+
+        db.collection("properties")
+          .orderBy("updatedAt", "desc")
+          .onSnapshot(
+            (snapshot) => {
+              const cards = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+
+              console.log(`🔄 Mudança detectada! ${cards.length} imóveis`);
+
+              propertyCache = cards;
+              saveLegacyStoredProperties(cards);
+              renderDynamicPropertyCards();
+              renderAdminList();
+              initCarousels();
+            },
+            (error) => {
+              console.error("❌ Erro no listener do Firebase:", error);
+            },
+          );
+      }
+
+      // =============================================
+      // RENDERIZAÇÃO DOS IMÓVEIS
+      // =============================================
+      function getStaticPropertyCards() {
+        const elements = document.querySelectorAll(
+          "#properties-carousel .property-card:not(.dynamic-admin-card)",
+        );
+        const cards = [];
+
+        elements.forEach((element, index) => {
+          // ✅ GERA UM ID ÚNICO BASEADO NO GRUPO
+          const carousel = element.querySelector(".property-carousel");
+          const group = carousel?.getAttribute("data-group");
+
+          // Se tiver grupo, usa o grupo como ID base
+          let id = group || `legacy-${index + 1}`;
+
+          // Verifica se já existe um ID salvo no elemento
+          if (element.dataset.propertyId) {
+            id = element.dataset.propertyId;
+          }
+
+          element.dataset.propertyId = id;
+
+          const info = element.querySelector(".property-info");
+          const title =
+            info?.querySelector("h3")?.textContent?.trim() ||
+            `Imóvel ${index + 1}`;
+          const price =
+            info?.querySelector(".price")?.textContent?.trim() ||
+            "Valor a consultar";
+          const paragraphs = Array.from(info?.querySelectorAll("p") || []);
+          const code =
+            paragraphs
+              .find((p) => /COD:/i.test(p.textContent))
+              ?.textContent.replace(/^COD:\s*/i, "")
+              .trim() || "LEGACY";
+          const bulletList = Array.from(info?.querySelectorAll("li") || []);
+          const description = bulletList.length
+            ? bulletList
+                .map((item) => item.textContent.replace(/^✅\s*/, "").trim())
+                .join(" • ")
+            : (info?.textContent || "")
+                .replace(title, "")
+                .replace(price, "")
+                .replace(new RegExp(code, "i"), "")
+                .trim() || "Imóvel disponível para avaliação.";
+
+          const coverImage =
+            group && imageGroups[group] && imageGroups[group][0]
+              ? imageGroups[group][0]
+              : "";
+
+          cards.push({
+            id,
+            title,
+            price,
+            description,
+            code,
+            image: coverImage,
+            group,
+            source: "legacy",
+          });
+        });
+
+        return cards;
+      }
+
+      // Função para corrigir cards órfãos (editados com ID errado)
+      function fixOrphanCards() {
+        const storedCards = getStoredProperties();
+        const staticCards = getStaticPropertyCards();
+        let fixed = false;
+
+        storedCards.forEach((card, index) => {
+          // Se o ID começa com "legacy-" mas tem um grupo correspondente
+          if (card.id && card.id.startsWith("legacy-") && card.group) {
+            // Procura um card estático com o mesmo grupo
+            const matchingStatic = staticCards.find(
+              (s) => s.group === card.group && s.id !== card.id,
+            );
+            if (matchingStatic) {
+              console.log(
+                `🔄 Corrigindo ID do card "${card.title}" de "${card.id}" para "${matchingStatic.id}"`,
+              );
+              storedCards[index].id = matchingStatic.id;
+              fixed = true;
+            }
+          }
+        });
+
+        if (fixed) {
+          saveStoredProperties(storedCards);
+          renderDynamicPropertyCards();
+          renderAdminList();
+          console.log("✅ Cards órfãos corrigidos!");
+        }
+      }
+
+      function getAllProperties() {
+        const storedCards = getStoredProperties();
+        const staticCards = getStaticPropertyCards();
+        const merged = [...staticCards];
+
+        storedCards.forEach((card) => {
+          const index = merged.findIndex((item) => item.id === card.id);
+          if (index >= 0) {
+            merged[index] = { ...merged[index], ...card };
+          } else {
+            merged.push({ ...card, source: card.source || "custom" });
+          }
+        });
+
+        return merged;
+      }
+
+      function renderDynamicPropertyCards() {
+        const container = document.getElementById("properties-carousel");
+        if (!container) return;
+
+        const existingAdminCards = container.querySelectorAll(
+          ".property-card.dynamic-admin-card",
+        );
+        existingAdminCards.forEach((card) => card.remove());
+
+        const staticCards = getStaticPropertyCards();
+        const storedCards = getStoredProperties();
+        const renderedLegacyIds = new Set();
+
+        staticCards.forEach((card) => {
+          const override = storedCards.find((item) => item.id === card.id);
+          const targetCard = document.querySelector(
+            `#properties-carousel .property-card[data-property-id="${card.id}"]`,
+          );
+          if (!targetCard) return;
+
+          const finalCard = override ? { ...card, ...override } : card;
+          const normalized = normalizeCardImages(
+            finalCard,
+            getPropertyFallbackImage(finalCard),
+          );
+          renderedLegacyIds.add(card.id);
+
+          const titleEl = targetCard.querySelector(".property-info h3");
+          const priceEl = targetCard.querySelector(".property-info .price");
+          const listEl = targetCard.querySelector(".property-info ul");
+          const codeEl = targetCard.querySelector(".property-info p");
+          const coverEl = targetCard.querySelector(".carousel-container");
+
+          if (titleEl) titleEl.textContent = finalCard.title;
+          if (priceEl) priceEl.textContent = finalCard.price;
+          if (codeEl) codeEl.textContent = `COD: ${finalCard.code || "LEGACY"}`;
+          if (listEl)
+            listEl.innerHTML = `<li>✅ ${escapeHtml(finalCard.description || "Imóvel disponível para avaliação.")}</li>`;
+          if (coverEl)
+            coverEl.style.backgroundImage = `url('${normalized.image}')`;
+        });
+
+        storedCards
+          .filter((card) => !renderedLegacyIds.has(card.id))
+          .forEach((card) => {
+            const normalized = normalizeCardImages(
+              card,
+              getPropertyFallbackImage(card),
+            );
+            const cardElement = document.createElement("div");
+            cardElement.className = "property-card dynamic-admin-card";
+            cardElement.innerHTML = `
+                        <div class="property-carousel">
+                            <div class="carousel-container" style="background-image: url('${normalized.image}'); background-size: cover; background-position: center;"></div>
+                        </div>
+                        <div class="property-info">
+                            <h3>${escapeHtml(card.title)}</h3>
+                            <div class="price">${escapeHtml(card.price)}</div>
+                            <p>COD: ${escapeHtml(card.code || "ADM")}</p>
+                            <ul>
+                                <li>✅ ${escapeHtml(card.description || "Imóvel disponível para avaliação.")}</li>
+                            </ul>
+                            ${normalized.images.length > 1 ? '<button class="btn btn-secondary btn-fullscreen" type="button">Ver Mais Imagens</button>' : ""}
+                        </div>
+                    `;
+
+            if (normalized.images.length > 1) {
+              cardElement
+                .querySelector(".btn-fullscreen")
+                ?.addEventListener("click", () => {
+                  currentGroup = "custom-gallery";
+                  currentImageIndex = 0;
+                  const modal = document.getElementById("modal-fullscreen");
+                  if (!modal) return;
+                  modal.innerHTML = `
+                                <span class="modal-close">&times;</span>
+                                <div class="gallery-container">
+                                    <div class="gallery-main">
+                                        <img class="modal-img" src="${normalized.images[0]}" alt="">
+                                    </div>
+                                    <div class="gallery-thumbnails">
+                                        ${normalized.images
+                                          .map(
+                                            (img, index) => `
+                                            <div class="thumbnail ${index === 0 ? "active" : ""}" data-index="${index}">
+                                                <img src="${img}" alt="">
+                                            </div>
+                                        `,
+                                          )
+                                          .join("")}
+                                    </div>
+                                    <div class="gallery-nav">
+                                        <button class="gallery-prev" aria-label="Anterior imagem"><i class="fas fa-chevron-left"></i></button>
+                                        <span class="gallery-counter">1 / ${normalized.images.length}</span>
+                                        <button class="gallery-next" aria-label="Próxima imagem"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            `;
+
+                  const modalClose = modal.querySelector(".modal-close");
+                  const thumbnails = modal.querySelectorAll(".thumbnail");
+                  const prevBtn = modal.querySelector(".gallery-prev");
+                  const nextBtn = modal.querySelector(".gallery-next");
+                  if (modalClose)
+                    modalClose.addEventListener("click", closeModal);
+                  thumbnails.forEach((thumb) => {
+                    thumb.addEventListener("click", function () {
+                      const index = Number(this.getAttribute("data-index"));
+                      const image = modal.querySelector(".modal-img");
+                      const counter = modal.querySelector(".gallery-counter");
+                      const items = modal.querySelectorAll(".thumbnail");
+                      if (image) image.src = normalized.images[index];
+                      if (counter)
+                        counter.textContent = `${index + 1} / ${normalized.images.length}`;
+                      items.forEach((item, i) =>
+                        item.classList.toggle("active", i === index),
+                      );
+                      currentImageIndex = index;
+                    });
+                  });
+                  if (prevBtn)
+                    prevBtn.addEventListener("click", () => {
+                      currentImageIndex =
+                        (currentImageIndex - 1 + normalized.images.length) %
+                        normalized.images.length;
+                      const image = modal.querySelector(".modal-img");
+                      const counter = modal.querySelector(".gallery-counter");
+                      if (image)
+                        image.src = normalized.images[currentImageIndex];
+                      if (counter)
+                        counter.textContent = `${currentImageIndex + 1} / ${normalized.images.length}`;
+                      modal
+                        .querySelectorAll(".thumbnail")
+                        .forEach((thumb, index) =>
+                          thumb.classList.toggle(
+                            "active",
+                            index === currentImageIndex,
+                          ),
+                        );
+                    });
+                  if (nextBtn)
+                    nextBtn.addEventListener("click", () => {
+                      currentImageIndex =
+                        (currentImageIndex + 1) % normalized.images.length;
+                      const image = modal.querySelector(".modal-img");
+                      const counter = modal.querySelector(".gallery-counter");
+                      if (image)
+                        image.src = normalized.images[currentImageIndex];
+                      if (counter)
+                        counter.textContent = `${currentImageIndex + 1} / ${normalized.images.length}`;
+                      modal
+                        .querySelectorAll(".thumbnail")
+                        .forEach((thumb, index) =>
+                          thumb.classList.toggle(
+                            "active",
+                            index === currentImageIndex,
+                          ),
+                        );
+                    });
+
+                  modal.classList.add("open");
+                  document.body.classList.add("modal-open");
+                });
+            }
+
+            container.appendChild(cardElement);
+          });
+      }
+
+      function renderAdminList() {
+        const list = document.getElementById("admin-property-list");
+        if (!list) return;
+
+        const cards = getAllProperties();
+        if (!cards.length) {
+          list.innerHTML =
+            '<p style="color:#666;">Nenhum imóvel cadastrado ainda.</p>';
+          return;
+        }
+
+        list.innerHTML = cards
+          .map(
+            (card) => `
+                <div class="admin-card-item">
+                    <img src="${card.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"}" alt="${escapeHtml(card.title)}" />
+                    <div class="admin-card-info">
+                        <h4>${escapeHtml(card.title)}</h4>
+                        <p>${escapeHtml(card.price)}</p>
+                    </div>
+                    <div class="admin-card-actions">
+                        <button type="button" class="admin-edit-btn" data-id="${card.id}">Editar</button>
+                        <button type="button" class="admin-delete-btn" data-id="${card.id}">Excluir</button>
+                    </div>
+                </div>
+            `,
+          )
+          .join("");
+
+        list.querySelectorAll(".admin-edit-btn").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const card = cards.find((item) => item.id === button.dataset.id);
+            if (!card) return;
+
+            const confirmed = await showConfirmationModal(
+              "Editar imóvel",
+              `Deseja editar <span class="property-title">${escapeHtml(card.title)}</span>?`,
+              "Editar",
+              "Cancelar",
+            );
+            if (!confirmed) return;
+
+            fillPropertyForm(card);
+          });
+        });
+
+        list.querySelectorAll(".admin-delete-btn").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const card = cards.find((item) => item.id === button.dataset.id);
+            if (!card) return;
+
+            const confirmed = await showConfirmationModal(
+              "Excluir imóvel",
+              `Tem certeza que deseja excluir <span class="property-title">${escapeHtml(card.title)}</span>?<br/><br/><strong>Essa ação não pode ser desfeita.</strong>`,
+              "Excluir",
+              "Cancelar",
+            );
+            if (!confirmed) return;
+
+            const currentCards = getStoredProperties();
+            const updatedCards = currentCards.filter(
+              (item) => item.id !== button.dataset.id,
+            );
+            saveStoredProperties(updatedCards);
+
+            const staticCard = document.querySelector(
+              `#properties-carousel .property-card[data-property-id="${button.dataset.id}"]`,
+            );
+            if (staticCard) {
+              const defaultValues = getStaticPropertyCards().find(
+                (item) => item.id === button.dataset.id,
+              );
+              if (defaultValues) {
+                const titleEl = staticCard.querySelector(".property-info h3");
+                const priceEl = staticCard.querySelector(
+                  ".property-info .price",
+                );
+                const listEl = staticCard.querySelector(".property-info ul");
+                const cover = staticCard.querySelector(".carousel-container");
+                if (titleEl) titleEl.textContent = defaultValues.title;
+                if (priceEl) priceEl.textContent = defaultValues.price;
+                if (listEl)
+                  listEl.innerHTML = `<li>✅ ${escapeHtml(defaultValues.description || "Imóvel disponível para avaliação.")}</li>`;
+                if (cover)
+                  cover.style.backgroundImage = `url('${defaultValues.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"}')`;
+              }
+            }
+
+            renderAdminList();
+            renderDynamicPropertyCards();
+          });
+        });
+      }
+
+      function fillPropertyForm(card) {
+        document.getElementById("property-id").value = card.id;
+        document.getElementById("property-title").value = card.title || "";
+        document.getElementById("property-price").value = card.price || "";
+        document.getElementById("property-description").value =
+          card.description || "";
+        const preview = document.getElementById("property-image-preview");
+        const fallbackImage = getPropertyFallbackImage(card);
+        preview.src = fallbackImage;
+        preview.classList.toggle("visible", Boolean(fallbackImage));
+        document.getElementById("property-image").value = "";
+        window.scrollTo({
+          top: document.getElementById("property-form").offsetTop - 80,
+          behavior: "smooth",
+        });
+      }
+
+      function resetPropertyForm() {
+        document.getElementById("property-form").reset();
+        document.getElementById("property-id").value = "";
+        const preview = document.getElementById("property-image-preview");
+        preview.src = "";
+        preview.classList.remove("visible");
+      }
+
+      // =============================================
+      // CARROSSEL DE IMAGENS
+      // =============================================
+      function generateImageArrayWithPattern(prefix, count, extension = "jpeg") {
+        const images = [];
+        for (let i = 1; i <= count; i++) {
+          images.push(`${prefix}(${i}).${extension}`);
+        }
+        return images;
+      }
+
+      const imageGroups = {
+        apartamentojardimnovasantapaula: generateImageArrayWithPattern(
+          "APARTAMENTOJARDIM NOVA SANTA PAULA",
+          15,
+        ),
+        apartamentoflordeliz: generateImageArrayWithPattern(
+          "Apartamento_FlordeLiz",
+          15,
+        ),
+        apartamentodasaraucarias: generateImageArrayWithPattern(
+          "ApartamentodasAraucárias",
+          18,
+        ),
+        apjardimgilbertoni: generateImageArrayWithPattern(
+          "Ap_JardimGilbertoni",
+          13,
+        ),
+        aptorresitalia: generateImageArrayWithPattern(
+          "Ap_mobiliadoTorresItália",
+          8,
+        ),
+        apartamentovilanery: generateImageArrayWithPattern(
+          "Apartamento_VilaNery",
+          12,
+        ),
+        apartamentoamplo: generateImageArrayWithPattern(
+          "Apartamento amplo",
+          11,
+        ),
+        apresidencialmonteathos: generateImageArrayWithPattern(
+          "ApResidencialMonteAthos",
+          6,
+        ),
+        casajardimaraucaria: generateImageArrayWithPattern(
+          "Casa_JardimAraucária",
+          9,
+        ),
+        casaaracy2: generateImageArrayWithPattern("Casa_ARACY_2", 7),
+        casajardimipanema: generateImageArrayWithPattern(
+          "Casa_JardimIpanema",
+          16,
+        ),
+        casajardimitamaraty: generateImageArrayWithPattern(
+          "Casa_JardimItamaraty",
+          16,
+        ),
+        casaparquefehr: generateImageArrayWithPattern("Casa_ParqueFehr", 15),
+        casamoderna: generateImageArrayWithPattern("Casa_Moderna", 11),
+        casadamha: generateImageArrayWithPattern("Casa_Damha_I", 6),
+        casaswisspark: generateImageArrayWithPattern("Casa_SwissPark", 10),
+        sobradocondominioparquefaber: generateImageArrayWithPattern(
+          "SOBRADO_CONDOMÍNIOPARQUEFABER_IV",
+          14,
+        ),
+        recantosabia: generateImageArrayWithPattern("RecantoSabia", 6),
+        parque_sabara: generateImageArrayWithPattern("Parque_Sabara", 34),
+        santa_felicia: generateImageArrayWithPattern("Santa_Felicia", 3),
+        pacaembu: generateImageArrayWithPattern("Pacaembu", 7),
+        valparaiso: generateImageArrayWithPattern("ValParaiso", 14),
+        greenview: generateImageArrayWithPattern("GreenView", 23),
+        edificio_sineu: generateImageArrayWithPattern("Edificio_Sineu", 24),
+        mont_soleil: generateImageArrayWithPattern("Mont_Soleil", 15),
+        mont_everest: generateImageArrayWithPattern("Mont_Everest", 8),
+        jardim_paulistano: generateImageArrayWithPattern(
+          "Jardim_Paulistano",
+          10,
+        ),
+      };
+
+      let currentImageIndex = 0;
+      let currentGroup = null;
+      const carouselIntervals = {};
+
+      function createCarousel(group) {
+        const images = imageGroups[group];
+        const container = document.getElementById(`carousel-${group}`);
+        const indicators = document.getElementById(`indicators-${group}`);
+
+        if (!container || !indicators) return;
+
+        container.innerHTML = images
+          .map(
+            (img, index) => `
+                <div class="carousel-slide ${index === 0 ? "active" : ""}" 
+                     style="background-image: url('${img}');" 
+                     data-index="${index}"></div>
+            `,
+          )
+          .join("");
+
+        indicators.innerHTML = images
+          .map(
+            (img, index) => `
+                <div class="carousel-dot ${index === 0 ? "active" : ""}" 
+                     data-index="${index}"></div>
+            `,
+          )
+          .join("");
+
+        indicators.querySelectorAll(".carousel-dot").forEach((dot) => {
+          dot.addEventListener("click", function () {
+            const index = parseInt(this.getAttribute("data-index"));
+            goToSlide(group, index, true);
+          });
+        });
+
+        const carouselElement = document.querySelector(
+          `.property-carousel[data-group="${group}"]`,
+        );
+        if (carouselElement) {
+          carouselElement.addEventListener("mouseenter", () => {
+            stopCarousel(group);
+          });
+          carouselElement.addEventListener("mouseleave", () => {
+            startCarousel(group);
+          });
+        }
+      }
+
+      function goToSlide(group, index, restartCarousel = false) {
+        const images = imageGroups[group];
+        if (!images || index < 0 || index >= images.length) return;
+
+        const container = document.getElementById(`carousel-${group}`);
+        const indicators = document.getElementById(`indicators-${group}`);
+
+        if (!container || !indicators) return;
+
+        const slides = container.querySelectorAll(".carousel-slide");
+        slides.forEach((slide, i) => {
+          slide.classList.toggle("active", i === index);
+        });
+
+        const dots = indicators.querySelectorAll(".carousel-dot");
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("active", i === index);
+        });
+
+        if (restartCarousel) {
+          stopCarousel(group);
+          startCarousel(group);
+        }
+      }
+
+      function startCarousel(group) {
+        stopCarousel(group);
+
+        const images = imageGroups[group];
+        if (!images || images.length <= 1) return;
+
+        let currentIndex = 0;
+        const slides = document.querySelectorAll(
+          `#carousel-${group} .carousel-slide`,
+        );
+        if (slides.length === 0) return;
+
+        slides.forEach((slide, index) => {
+          if (slide.classList.contains("active")) {
+            currentIndex = index;
+          }
+        });
+
+        carouselIntervals[group] = setInterval(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          goToSlide(group, currentIndex);
+        }, 3500);
+      }
+
+      function stopCarousel(group) {
+        if (carouselIntervals[group]) {
+          clearInterval(carouselIntervals[group]);
+          delete carouselIntervals[group];
+        }
+      }
+
+      function initCarousels() {
+        Object.keys(imageGroups).forEach((group) => {
+          const carousel = document.querySelector(
+            `.property-carousel[data-group="${group}"]`,
+          );
+          if (carousel) {
+            createCarousel(group);
+            startCarousel(group);
+          }
+        });
+      }
+
+      // =============================================
+      // CARROSSEL HORIZONTAL
+      // =============================================
+      function initPropertiesCarousel() {
+        const carousel = document.getElementById("properties-carousel");
+        const prevBtn = document.getElementById("carousel-prev");
+        const nextBtn = document.getElementById("carousel-next");
+
+        if (!carousel || !prevBtn || !nextBtn) return;
+
+        const carouselWrapper = carousel.parentElement;
+        if (!carouselWrapper) return;
+
+        let currentPosition = 0;
+        let autoScrollInterval = null;
+        let isPaused = false;
+
+        function getGap() {
+          const comp = window.getComputedStyle(carousel);
+          return parseInt(comp.getPropertyValue("gap")) || 30;
+        }
+
+        function getScrollAmount() {
+          const firstCard = carousel.querySelector(".property-card");
+          const gap = getGap();
+          const width = firstCard
+            ? firstCard.getBoundingClientRect().width
+            : 320;
+
+          if (window.innerWidth <= 768) {
+            return Math.max(carouselWrapper.clientWidth * 0.9, width + gap);
+          }
+
+          return width + gap;
+        }
+
+        function getMaxScroll() {
+          return Math.max(
+            0,
+            carousel.scrollWidth - carouselWrapper.clientWidth,
+          );
+        }
+
+        function scrollCarousel(direction) {
+          const maxScroll = getMaxScroll();
+          const scrollAmount = getScrollAmount();
+          const currentScroll = carouselWrapper.scrollLeft;
+
+          let nextPosition = currentScroll;
+
+          if (direction === "next") {
+            nextPosition =
+              currentScroll >= maxScroll
+                ? 0
+                : Math.min(currentScroll + scrollAmount, maxScroll);
+          } else {
+            nextPosition =
+              currentScroll <= 0
+                ? maxScroll
+                : Math.max(currentScroll - scrollAmount, 0);
+          }
+
+          currentPosition = nextPosition;
+          carouselWrapper.scrollTo({
+            left: currentPosition,
+            behavior: "smooth",
+          });
+        }
+
+        function startAutoScroll() {
+          if (autoScrollInterval) return;
+
+          autoScrollInterval = setInterval(() => {
+            if (!isPaused) {
+              scrollCarousel("next");
+            }
+          }, 4000);
+        }
+
+        function stopAutoScroll() {
+          if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+          }
+        }
+
+        prevBtn.addEventListener("click", () => {
+          stopAutoScroll();
+          scrollCarousel("prev");
+          setTimeout(startAutoScroll, 500);
+        });
+
+        nextBtn.addEventListener("click", () => {
+          stopAutoScroll();
+          scrollCarousel("next");
+          setTimeout(startAutoScroll, 500);
+        });
+
+        carouselWrapper.addEventListener("mouseenter", () => {
+          isPaused = true;
+        });
+
+        carouselWrapper.addEventListener("mouseleave", () => {
+          isPaused = false;
+        });
+
+        window.addEventListener("resize", () => {
+          const max = getMaxScroll();
+          if (currentPosition > max) {
+            currentPosition = Math.max(0, max);
+          }
+          carouselWrapper.scrollTo({ left: currentPosition, behavior: "auto" });
+        });
+
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+        startAutoScroll();
+      }
+
+      // =============================================
+      // MODAL DE GALERIA
+      // =============================================
+      function createGalleryModal(group) {
+        const images = imageGroups[group];
+        const modal = document.getElementById("modal-fullscreen");
+        if (!images || images.length === 0 || !modal) return;
+        currentImageIndex = Math.max(
+          0,
+          Math.min(currentImageIndex, images.length - 1),
+        );
+
+        modal.innerHTML = `
+                <span class="modal-close">&times;</span>
+                <div class="gallery-container">
+                    <div class="gallery-main">
+                        <img class="modal-img" src="${images[currentImageIndex]}" alt="">
+                    </div>
+                    <div class="gallery-thumbnails">
+                        ${images
+                          .map(
+                            (img, index) => `
+                            <div class="thumbnail ${index === currentImageIndex ? "active" : ""}" data-index="${index}">
+                                <img src="${img}" alt="">
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                    <div class="gallery-nav">
+                        <button class="gallery-prev" aria-label="Anterior imagem"><i class="fas fa-chevron-left"></i></button>
+                        <span class="gallery-counter">${currentImageIndex + 1} / ${images.length}</span>
+                        <button class="gallery-next" aria-label="Próxima imagem"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            `;
+
+        const modalClose = modal.querySelector(".modal-close");
+        const thumbnails = modal.querySelectorAll(".thumbnail");
+        const prevBtn = modal.querySelector(".gallery-prev");
+        const nextBtn = modal.querySelector(".gallery-next");
+
+        if (modalClose) {
+          modalClose.addEventListener("click", closeModal);
+        }
+
+        thumbnails.forEach((thumb) => {
+          thumb.addEventListener("click", function () {
+            const index = parseInt(this.getAttribute("data-index"));
+            showImage(index);
+          });
+        });
+
+        if (prevBtn) {
+          prevBtn.addEventListener("click", () => {
+            const newIndex =
+              (currentImageIndex - 1 + images.length) % images.length;
+            showImage(newIndex);
+          });
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", () => {
+            const newIndex = (currentImageIndex + 1) % images.length;
+            showImage(newIndex);
+          });
+        }
+
+        document.addEventListener("keydown", handleKeyPress);
+      }
+
+      function showImage(index) {
+        const images = imageGroups[currentGroup];
+        currentImageIndex = index;
+
+        const modalImg = document.querySelector(".modal-img");
+        const counter = document.querySelector(".gallery-counter");
+        const thumbnails = document.querySelectorAll(".thumbnail");
+
+        modalImg.src = images[index];
+        counter.textContent = `${index + 1} / ${images.length}`;
+
+        thumbnails.forEach((thumb, i) => {
+          thumb.classList.toggle("active", i === index);
+        });
+      }
+
+      function handleKeyPress(e) {
+        if (
+          !document
+            .getElementById("modal-fullscreen")
+            .classList.contains("open")
+        )
+          return;
+
+        const images = imageGroups[currentGroup];
+
+        switch (e.key) {
+          case "ArrowLeft":
+            const prevIndex =
+              (currentImageIndex - 1 + images.length) % images.length;
+            showImage(prevIndex);
+            break;
+          case "ArrowRight":
+            const nextIndex = (currentImageIndex + 1) % images.length;
+            showImage(nextIndex);
+            break;
+          case "Escape":
+            closeModal();
+            break;
+        }
+      }
+
+      function closeModal() {
+        document.getElementById("modal-fullscreen").classList.remove("open");
+        document.body.classList.remove("modal-open");
+        document.removeEventListener("keydown", handleKeyPress);
+      }
+
+      // =============================================
+      // ADMIN PANEL
+      // =============================================
+      function openAdminPanel() {
+        document.getElementById("admin-auth").classList.remove("open");
+        document.getElementById("admin-panel").classList.add("open");
+      }
+
+      function closeAdminPanel() {
+        document.getElementById("admin-panel").classList.remove("open");
+        document.getElementById("admin-auth").classList.remove("open");
+        resetPropertyForm();
+      }
+
+      function closeAdminAuth() {
+        document.getElementById("admin-auth").classList.remove("open");
+        document.getElementById("admin-password").value = "";
+      }
+
+      function attemptLogin() {
+        const passwordValue = document
+          .getElementById("admin-password")
+          .value.trim();
+        if (passwordValue === ADMIN_PASSWORD) {
+          openAdminPanel();
+          document.getElementById("admin-password").value = "";
+          renderAdminList();
+          renderDynamicPropertyCards();
+          return;
+        }
+        alert("Senha incorreta.");
+      }
+
+      document.getElementById("admin-trigger").addEventListener("click", () => {
+        document.getElementById("admin-auth").classList.add("open");
+        document.getElementById("admin-password").value = "";
+      });
+
+      document
+        .getElementById("admin-auth-close")
+        .addEventListener("click", closeAdminAuth);
+      document
+        .getElementById("admin-login-btn")
+        .addEventListener("click", attemptLogin);
+      document
+        .getElementById("admin-close-panel")
+        .addEventListener("click", closeAdminPanel);
+      document
+        .getElementById("cancel-edit")
+        .addEventListener("click", resetPropertyForm);
+
+      document.getElementById("admin-panel").addEventListener("click", (event) => {
+        if (!event.target.closest(".admin-panel-box")) {
+          closeAdminPanel();
+        }
+      });
+
+      document.getElementById("admin-auth").addEventListener("click", (event) => {
+        if (!event.target.closest(".admin-box")) {
+          closeAdminAuth();
+        }
+      });
+
+      document
+        .getElementById("admin-password")
+        .addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            attemptLogin();
+          }
+        });
+
+      if (window.location.hash === "#admin") {
+        const isLogged = localStorage.getItem(ADMIN_SESSION_KEY) === "true";
+        if (isLogged) {
+          openAdminPanel();
+        } else {
+          document.getElementById("admin-auth").classList.add("open");
+        }
+      }
+
+      // =============================================
+      // IMAGE UPLOAD
+      // =============================================
+      function updateImagePreview(files) {
+        const preview = document.getElementById("property-image-preview");
+        const file = files && files[0];
+        if (!file) {
+          preview.src = "";
+          preview.classList.remove("visible");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          preview.src = event.target.result;
+          preview.classList.add("visible");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      const propertyImageInput = document.getElementById("property-image");
+      const propertyImageDropzone = document.getElementById(
+        "property-image-dropzone",
+      );
+
+      propertyImageInput.addEventListener("change", function () {
+        updateImagePreview(this.files);
+      });
+
+      if (propertyImageDropzone) {
+        ["dragenter", "dragover"].forEach((eventName) => {
+          propertyImageDropzone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            propertyImageDropzone.classList.add("dragover");
+          });
+        });
+
+        ["dragleave", "dragend", "drop"].forEach((eventName) => {
+          propertyImageDropzone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            propertyImageDropzone.classList.remove("dragover");
+          });
+        });
+
+        propertyImageDropzone.addEventListener("drop", function (event) {
+          const files = event.dataTransfer && event.dataTransfer.files;
+          if (!files || !files.length) return;
+
+          const dataTransfer = new DataTransfer();
+          Array.from(files).forEach((file) => dataTransfer.items.add(file));
+          propertyImageInput.files = dataTransfer.files;
+          updateImagePreview(propertyImageInput.files);
+        });
+      }
+
+      // =============================================
+      // FORM SUBMIT
+      // =============================================
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function readFilesAsDataUrls(files) {
+        const fileList = Array.from(files || []);
+        return Promise.all(fileList.map((file) => readFileAsDataUrl(file)));
+      }
+
+      document
+        .getElementById("property-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const id =
+            document.getElementById("property-id").value || String(Date.now());
+          const title = document.getElementById("property-title").value.trim();
+          const price = document.getElementById("property-price").value.trim();
+          const description = document
+            .getElementById("property-description")
+            .value.trim();
+          const imageInput = document.getElementById("property-image");
+          const existingCards = getStoredProperties();
+          const cardIndex = existingCards.findIndex((item) => item.id === id);
+          const legacyCard = getStaticPropertyCards().find(
+            (item) => item.id === id,
+          );
+
+          let images = [];
+          if (imageInput.files && imageInput.files.length) {
+            images = await readFilesAsDataUrls(imageInput.files);
+          } else if (cardIndex >= 0) {
+            images = normalizeCardImages(
+              existingCards[cardIndex],
+              legacyCard?.image || "",
+            ).images;
+          } else if (legacyCard) {
+            images = normalizeCardImages(
+              legacyCard,
+              legacyCard.image || "",
+            ).images;
+          }
+
+          const normalized = normalizeCardImages(
+            {
+              image: images[0] || "",
+              images,
+            },
+            legacyCard?.image || "",
+          );
+
+          const newCard = {
+            id,
+            title,
+            price,
+            description,
+            image: normalized.image,
+            images: normalized.images,
+            code: legacyCard ? legacyCard.code || "LEGACY" : "ADM",
+            group: legacyCard?.group || "",
+          };
+
+          if (cardIndex >= 0) {
+            existingCards[cardIndex] = newCard;
+          } else {
+            existingCards.unshift(newCard);
+          }
+
+          saveStoredProperties(existingCards);
+          renderAdminList();
+          renderDynamicPropertyCards();
+          resetPropertyForm();
+        });
+
+      // =============================================
+      // LINKS E NAVEGAÇÃO
+      // =============================================
+      function detectDeviceAndSetWhatsApp() {
+        const whatsappLink = document.getElementById("whatsapp-link");
+        const message =
+          "Olá! Estou interessado(a) em um imóvel da HABILEADS e gostaria de mais informações.";
+        const phone = "5516997837861";
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        whatsappLink.addEventListener("click", function (e) {
+          if (isMobile) {
+            e.preventDefault();
+            window.location.href = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            setTimeout(() => {
+              window.location.href = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            }, 2000);
+          } else {
+            whatsappLink.href = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            whatsappLink.setAttribute("target", "_blank");
+          }
+        });
+      }
+
+      function setupGmailLink() {
+        const gmailLink = document.getElementById("gmail-link");
+        const email = "habileads@gmail.com";
+        const subject = "Contato via Site - HABILEADS";
+        const body =
+          "Olá, gostaria de mais informações sobre os imóveis da HABILEADS.";
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        gmailLink.addEventListener("click", function (e) {
+          if (isMobile) {
+            e.preventDefault();
+            window.location.href = `googlegmail://co?to=${email}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            setTimeout(() => {
+              window.location.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            }, 2000);
+          } else {
+            gmailLink.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            gmailLink.setAttribute("target", "_blank");
+          }
+        });
+      }
+
+      function setupInstagramLink() {
+        const instagramLink = document.getElementById("instagram-link");
+        if (!instagramLink) return;
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        instagramLink.addEventListener("click", function (e) {
+          if (isMobile) {
+            e.preventDefault();
+            window.location.href = "instagram://user?username=habileads";
+            setTimeout(() => {
+              window.location.href = "https://www.instagram.com/habileads/";
+            }, 2000);
+          } else {
+            e.preventDefault();
+            window.open("https://www.instagram.com/habileads/", "_blank");
+          }
+        });
+      }
+
+      // =============================================
+      // DOMContentLoaded
+      // =============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        // Efeito de digitação
+        const heroTitle = document.querySelector(".hero h1");
+        if (heroTitle) {
+          const originalText = heroTitle.textContent;
+          heroTitle.textContent = "";
+
+          let i = 0;
+          const typeWriter = () => {
+            if (i < originalText.length) {
+              heroTitle.textContent += originalText.charAt(i);
+              i++;
+              setTimeout(typeWriter, 80);
+            }
+          };
+
+          typeWriter();
+        }
+
+        // Inicializar carrosséis
+        initCarousels();
+        initPropertiesCarousel();
+
+        // Carregar dados do Firebase
+        loadFirebaseDataOnStart().then(() => {
+          console.log("✅ Dados carregados com sucesso!");
+
+          // Corrigir cards órfãos
+          fixOrphanCards();
+
+          if (isCloudAvailable()) {
+            listenToRealTimeUpdates();
+          }
+        });
+
+        // Configurar links
+        detectDeviceAndSetWhatsApp();
+        setupGmailLink();
+        setupInstagramLink();
+
+        // Menu mobile
+        const mobileMenu = document.getElementById("mobile-menu");
+        const nav = document.getElementById("nav");
+        if (mobileMenu && nav) {
+          mobileMenu.addEventListener("click", function () {
+            nav.classList.toggle("active");
+          });
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          if (
+            anchor.id !== "whatsapp-link" &&
+            anchor.id !== "gmail-link" &&
+            anchor.id !== "instagram-link"
+          ) {
+            anchor.addEventListener("click", function (e) {
+              e.preventDefault();
+
+              const targetId = this.getAttribute("href");
+              if (targetId === "#") return;
+
+              const targetElement = document.querySelector(targetId);
+              if (targetElement) {
+                window.scrollTo({
+                  top: targetElement.offsetTop - 80,
+                  behavior: "smooth",
+                });
+              }
+            });
+          }
+        });
+      });
+
+      // =============================================
+      // EVENTOS DOS BOTÕES FULLSCREEN
+      // =============================================
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".btn-fullscreen");
+        if (!btn) return;
+
+        const group = btn.getAttribute("data-group");
+        const clickedImg = btn.getAttribute("data-img");
+
+        currentGroup = group;
+        currentImageIndex = imageGroups[group].findIndex(
+          (img) => img === clickedImg,
+        );
+        if (currentImageIndex === -1) {
+          currentImageIndex = 0;
+        }
+
+        createGalleryModal(group);
+        document.getElementById("modal-fullscreen").classList.add("open");
+        document.body.classList.add("modal-open");
+      });
+
+      // Fechar modal ao clicar fora
+      const modalFullscreen = document.getElementById("modal-fullscreen");
+      if (modalFullscreen) {
+        modalFullscreen.addEventListener("click", (e) => {
+          if (e.target === modalFullscreen) {
+            closeModal();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
