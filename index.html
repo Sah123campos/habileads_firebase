@@ -221,6 +221,21 @@
         padding: 0 60px;
       }
 
+      .property-category {
+        margin-bottom: 55px;
+      }
+
+      .property-category:last-child {
+        margin-bottom: 0;
+      }
+
+      .property-category-title {
+        color: var(--azul);
+        font-size: 1.8rem;
+        margin: 0 0 18px;
+        text-align: center;
+      }
+
       .properties-carousel-wrapper {
         position: relative;
         width: 100%;
@@ -838,8 +853,10 @@
 
       .admin-box input,
       .admin-box textarea,
+      .admin-box select,
       .admin-panel-box input,
-      .admin-panel-box textarea {
+      .admin-panel-box textarea,
+      .admin-panel-box select {
         width: 100%;
         border: 1px solid #d7dfe9;
         border-radius: 10px;
@@ -847,6 +864,28 @@
         font-size: 1rem;
         resize: vertical;
         background: #f9fbff;
+      }
+
+      .admin-panel-box select {
+        appearance: none;
+        cursor: pointer;
+        color: var(--azul);
+        font-weight: 600;
+        padding-right: 42px;
+        background-color: #f9fbff;
+        background-image: linear-gradient(45deg, transparent 50%, var(--vermelho) 50%),
+          linear-gradient(135deg, var(--vermelho) 50%, transparent 50%);
+        background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+        background-size: 6px 6px, 6px 6px;
+        background-repeat: no-repeat;
+      }
+
+      .admin-panel-box input:focus,
+      .admin-panel-box textarea:focus,
+      .admin-panel-box select:focus {
+        outline: none;
+        border-color: var(--vermelho);
+        box-shadow: 0 0 0 3px rgba(209, 26, 33, 0.12);
       }
 
       .admin-box button,
@@ -941,6 +980,55 @@
         width: 100%;
         padding: 10px 0;
         cursor: pointer;
+      }
+
+      .image-order-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .image-order-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border: 1px solid #dfe7f0;
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .image-order-item img {
+        width: 64px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+
+      .image-order-item span {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--azul);
+        font-size: 0.85rem;
+      }
+
+      .image-order-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .image-order-actions button {
+        padding: 6px 9px !important;
+        color: var(--azul);
+        background: #e9f3ff;
+      }
+
+      .image-order-actions button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
       }
 
       .admin-preview {
@@ -1401,10 +1489,13 @@
           <h2>Imóveis em Destaque</h2>
           <p>Confira nossas melhores oportunidades do mercado</p>
         </div>
-        <div class="properties-grid">
+        <div class="property-category">
+          <h3 class="property-category-title">Imóveis à venda</h3>
+          <div class="properties-grid">
           <button
             class="carousel-nav-btn prev"
             id="carousel-prev"
+            data-carousel-target="properties-carousel"
             aria-label="Anterior"
           >
             <i class="fas fa-chevron-left"></i>
@@ -2339,10 +2430,37 @@
           <button
             class="carousel-nav-btn next"
             id="carousel-next"
+            data-carousel-target="properties-carousel"
             aria-label="Próximo"
           >
             <i class="fas fa-chevron-right"></i>
           </button>
+          </div>
+        </div>
+        <div class="property-category">
+          <h3 class="property-category-title">Imóveis para locação</h3>
+          <div class="properties-grid">
+            <button
+              class="carousel-nav-btn prev"
+              id="carousel-prev-locacoes"
+              data-carousel-target="properties-carousel-locacoes"
+              aria-label="Anterior"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="properties-carousel-wrapper">
+              <div class="properties-carousel" id="properties-carousel-locacoes"></div>
+            </div>
+            <button
+              class="carousel-nav-btn next"
+              id="carousel-next-locacoes"
+              data-carousel-target="properties-carousel-locacoes"
+              aria-label="Próximo"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
         </div>
       </div>
     </section>
@@ -2545,6 +2663,14 @@
           </div>
 
           <div class="field">
+            <label for="property-type">Finalidade</label>
+            <select id="property-type" required>
+              <option value="venda">Venda</option>
+              <option value="locacao">Locação</option>
+            </select>
+          </div>
+
+          <div class="field">
             <label for="property-description">Descrição</label>
             <textarea
               id="property-description"
@@ -2573,6 +2699,7 @@
               class="admin-preview"
               alt="Pré-visualização da imagem"
             />
+            <div id="image-order-list" class="image-order-list"></div>
           </div>
 
           <div class="admin-form-actions">
@@ -2758,6 +2885,20 @@
           return imageGroups[card.group][0];
         }
         return "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+      }
+
+      function getPropertyImages(card = {}) {
+        const savedImages = Array.isArray(card.images)
+          ? card.images.filter(Boolean)
+          : [];
+
+        if (card.group && imageGroups[card.group]?.length) {
+          if (savedImages.length > 1) return savedImages;
+          return imageGroups[card.group];
+        }
+
+        if (savedImages.length) return savedImages;
+        return card.image ? [card.image] : [];
       }
 
       function showConfirmationModal(
@@ -3022,6 +3163,7 @@
             code,
             image: coverImage,
             group,
+            type: "venda",
             source: "legacy",
           });
         });
@@ -3079,12 +3221,18 @@
 
       function renderDynamicPropertyCards() {
         const container = document.getElementById("properties-carousel");
+        const rentalContainer = document.getElementById(
+          "properties-carousel-locacoes",
+        );
         if (!container) return;
 
         const existingAdminCards = container.querySelectorAll(
           ".property-card.dynamic-admin-card",
         );
         existingAdminCards.forEach((card) => card.remove());
+        rentalContainer
+          ?.querySelectorAll(".property-card.dynamic-admin-card")
+          .forEach((card) => card.remove());
 
         const staticCards = getStaticPropertyCards();
         const storedCards = getStoredProperties();
@@ -3242,7 +3390,10 @@
                 });
             }
 
-            container.appendChild(cardElement);
+            const targetContainer = card.type === "locacao"
+              ? rentalContainer
+              : container;
+            targetContainer?.appendChild(cardElement);
           });
       }
 
@@ -3264,7 +3415,7 @@
                     <img src="${card.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"}" alt="${escapeHtml(card.title)}" />
                     <div class="admin-card-info">
                         <h4>${escapeHtml(card.title)}</h4>
-                        <p>${escapeHtml(card.price)}</p>
+                      <p>${card.type === "locacao" ? "Locação" : "Venda"} · ${escapeHtml(card.price)}</p>
                     </div>
                     <div class="admin-card-actions">
                         <button type="button" class="admin-edit-btn" data-id="${card.id}">Editar</button>
@@ -3344,6 +3495,8 @@
         document.getElementById("property-id").value = card.id;
         document.getElementById("property-title").value = card.title || "";
         document.getElementById("property-price").value = card.price || "";
+        document.getElementById("property-type").value =
+          card.type === "locacao" ? "locacao" : "venda";
         document.getElementById("property-description").value =
           card.description || "";
         const preview = document.getElementById("property-image-preview");
@@ -3351,18 +3504,30 @@
         preview.src = fallbackImage;
         preview.classList.toggle("visible", Boolean(fallbackImage));
         document.getElementById("property-image").value = "";
-        window.scrollTo({
-          top: document.getElementById("property-form").offsetTop - 80,
-          behavior: "smooth",
-        });
+        orderedImages = getPropertyImages(card).map((src, index) => ({
+          src,
+          name: `Imagem ${index + 1}`,
+        }));
+        renderImageOrder();
+        const form = document.getElementById("property-form");
+        const panelBox = document.querySelector(".admin-panel-box");
+        if (form && panelBox) {
+          panelBox.scrollTo({
+            top: Math.max(0, form.offsetTop - 20),
+            behavior: "smooth",
+          });
+        }
+        document.getElementById("property-title")?.focus();
       }
 
       function resetPropertyForm() {
         document.getElementById("property-form").reset();
         document.getElementById("property-id").value = "";
+        orderedImages = [];
         const preview = document.getElementById("property-image-preview");
         preview.src = "";
         preview.classList.remove("visible");
+        renderImageOrder();
       }
 
       // =============================================
@@ -3566,10 +3731,14 @@
       // =============================================
       // CARROSSEL HORIZONTAL
       // =============================================
-      function initPropertiesCarousel() {
-        const carousel = document.getElementById("properties-carousel");
-        const prevBtn = document.getElementById("carousel-prev");
-        const nextBtn = document.getElementById("carousel-next");
+      function initPropertiesCarousel(
+        carouselId = "properties-carousel",
+        prevId = "carousel-prev",
+        nextId = "carousel-next",
+      ) {
+        const carousel = document.getElementById(carouselId);
+        const prevBtn = document.getElementById(prevId);
+        const nextBtn = document.getElementById(nextId);
 
         if (!carousel || !prevBtn || !nextBtn) return;
 
@@ -3884,21 +4053,65 @@
       // =============================================
       // IMAGE UPLOAD
       // =============================================
+      let orderedImages = [];
+
+      function renderImageOrder() {
+        const list = document.getElementById("image-order-list");
+        if (!list) return;
+
+        list.innerHTML = orderedImages
+          .map(
+            (image, index) => `
+              <div class="image-order-item">
+                <img src="${image.src}" alt="Imagem ${index + 1}" />
+                <span>${index + 1}. ${escapeHtml(image.name)}</span>
+                <div class="image-order-actions">
+                  <button type="button" data-image-action="up" data-image-index="${index}" ${index === 0 ? "disabled" : ""} aria-label="Mover imagem para cima">&#9650;</button>
+                  <button type="button" data-image-action="down" data-image-index="${index}" ${index === orderedImages.length - 1 ? "disabled" : ""} aria-label="Mover imagem para baixo">&#9660;</button>
+                </div>
+              </div>
+            `,
+          )
+          .join("");
+
+        list.querySelectorAll("button[data-image-action]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const index = Number(button.dataset.imageIndex);
+            const offset = button.dataset.imageAction === "up" ? -1 : 1;
+            const targetIndex = index + offset;
+            if (targetIndex < 0 || targetIndex >= orderedImages.length) return;
+            [orderedImages[index], orderedImages[targetIndex]] = [
+              orderedImages[targetIndex],
+              orderedImages[index],
+            ];
+            renderImageOrder();
+            updateImagePreview(orderedImages);
+          });
+        });
+      }
+
       function updateImagePreview(files) {
         const preview = document.getElementById("property-image-preview");
-        const file = files && files[0];
-        if (!file) {
+        const firstImage = files && files[0];
+        const source = firstImage?.src || firstImage;
+        if (!source) {
           preview.src = "";
           preview.classList.remove("visible");
           return;
         }
 
+        if (typeof source === "string") {
+          preview.src = source;
+          preview.classList.add("visible");
+          return;
+        }
+
         const reader = new FileReader();
-        reader.onload = function (event) {
+        reader.onload = (event) => {
           preview.src = event.target.result;
           preview.classList.add("visible");
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(source);
       }
 
       const propertyImageInput = document.getElementById("property-image");
@@ -3907,7 +4120,13 @@
       );
 
       propertyImageInput.addEventListener("change", function () {
-        updateImagePreview(this.files);
+        orderedImages = Array.from(this.files || []).map((file) => ({
+          file,
+          name: file.name,
+          src: URL.createObjectURL(file),
+        }));
+        renderImageOrder();
+        updateImagePreview(orderedImages);
       });
 
       if (propertyImageDropzone) {
@@ -3929,10 +4148,16 @@
           const files = event.dataTransfer && event.dataTransfer.files;
           if (!files || !files.length) return;
 
+          orderedImages = Array.from(files).map((file) => ({
+            file,
+            name: file.name,
+            src: URL.createObjectURL(file),
+          }));
           const dataTransfer = new DataTransfer();
-          Array.from(files).forEach((file) => dataTransfer.items.add(file));
+          orderedImages.forEach((image) => dataTransfer.items.add(image.file));
           propertyImageInput.files = dataTransfer.files;
-          updateImagePreview(propertyImageInput.files);
+          renderImageOrder();
+          updateImagePreview(orderedImages);
         });
       }
 
@@ -3948,9 +4173,12 @@
         });
       }
 
-      async function readFilesAsDataUrls(files) {
-        const fileList = Array.from(files || []);
-        return Promise.all(fileList.map((file) => readFileAsDataUrl(file)));
+      async function readOrderedImages() {
+        return Promise.all(
+          orderedImages.map((image) =>
+            image.file ? readFileAsDataUrl(image.file) : image.src,
+          ),
+        );
       }
 
       document
@@ -3962,6 +4190,7 @@
             document.getElementById("property-id").value || String(Date.now());
           const title = document.getElementById("property-title").value.trim();
           const price = document.getElementById("property-price").value.trim();
+          const type = document.getElementById("property-type").value;
           const description = document
             .getElementById("property-description")
             .value.trim();
@@ -3973,8 +4202,8 @@
           );
 
           let images = [];
-          if (imageInput.files && imageInput.files.length) {
-            images = await readFilesAsDataUrls(imageInput.files);
+          if (orderedImages.length) {
+            images = await readOrderedImages();
           } else if (cardIndex >= 0) {
             images = normalizeCardImages(
               existingCards[cardIndex],
@@ -3999,6 +4228,7 @@
             id,
             title,
             price,
+            type,
             description,
             image: normalized.image,
             images: normalized.images,
@@ -4111,6 +4341,11 @@
         // Inicializar carrosséis
         initCarousels();
         initPropertiesCarousel();
+        initPropertiesCarousel(
+          "properties-carousel-locacoes",
+          "carousel-prev-locacoes",
+          "carousel-next-locacoes",
+        );
 
         // Carregar dados do Firebase
         loadFirebaseDataOnStart().then(() => {
@@ -4172,6 +4407,8 @@
 
         const group = btn.getAttribute("data-group");
         const clickedImg = btn.getAttribute("data-img");
+
+        if (!group || !imageGroups[group]) return;
 
         currentGroup = group;
         currentImageIndex = imageGroups[group].findIndex(
