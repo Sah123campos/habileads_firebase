@@ -1092,6 +1092,23 @@
         font-size: 0.85rem;
       }
 
+      .admin-order-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .admin-order-actions button {
+        min-width: 36px;
+        padding: 9px 10px;
+        background: #eef4fb;
+        color: var(--azul);
+      }
+
+      .admin-order-actions button:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
       .admin-edit-btn {
         background: #e9f3ff;
         color: var(--azul);
@@ -3216,7 +3233,43 @@
           }
         });
 
-        return merged;
+        return merged
+          .map((card, index) => ({
+            ...card,
+            order: Number.isFinite(Number(card.order))
+              ? Number(card.order)
+              : index,
+          }))
+          .sort((first, second) => first.order - second.order);
+      }
+
+      async function moveProperty(cardId, direction) {
+        const cards = getAllProperties();
+        const currentIndex = cards.findIndex((card) => card.id === cardId);
+        const targetIndex = currentIndex + direction;
+        if (currentIndex < 0 || targetIndex < 0 || targetIndex >= cards.length) {
+          return;
+        }
+
+        [cards[currentIndex], cards[targetIndex]] = [
+          cards[targetIndex],
+          cards[currentIndex],
+        ];
+
+        const storedCards = getStoredProperties();
+        const updatedCards = cards.map((card, index) => {
+          const stored = storedCards.find((item) => item.id === card.id);
+          return {
+            ...(stored || card),
+            id: card.id,
+            order: index,
+            type: card.type === "locacao" ? "locacao" : "venda",
+          };
+        });
+
+        saveStoredProperties(updatedCards);
+        renderAdminList();
+        renderDynamicPropertyCards();
       }
 
       function renderDynamicPropertyCards() {
@@ -3246,11 +3299,23 @@
           if (!targetCard) return;
 
           const finalCard = override ? { ...card, ...override } : card;
+          const cardImages = getPropertyImages(finalCard);
           const normalized = normalizeCardImages(
-            finalCard,
+            {
+              ...finalCard,
+              image: cardImages[0] || getPropertyFallbackImage(finalCard),
+              images: cardImages,
+            },
             getPropertyFallbackImage(finalCard),
           );
           renderedLegacyIds.add(card.id);
+
+          if (override && finalCard.group && normalized.images.length) {
+            imageGroups[finalCard.group] = normalized.images;
+            stopCarousel(finalCard.group);
+            createCarousel(finalCard.group);
+            startCarousel(finalCard.group);
+          }
 
           const titleEl = targetCard.querySelector(".property-info h3");
           const priceEl = targetCard.querySelector(".property-info .price");
@@ -3263,12 +3328,27 @@
           if (codeEl) codeEl.textContent = `COD: ${finalCard.code || "LEGACY"}`;
           if (listEl)
             listEl.innerHTML = `<li>✅ ${escapeHtml(finalCard.description || "Imóvel disponível para avaliação.")}</li>`;
-          if (coverEl)
+          if (coverEl) {
             coverEl.style.backgroundImage = `url('${normalized.image}')`;
+            const firstSlide = coverEl.querySelector(".carousel-slide");
+            if (firstSlide) {
+              firstSlide.style.backgroundImage = `url('${normalized.image}')`;
+              firstSlide.classList.add("active");
+            }
+          }
         });
 
         storedCards
           .filter((card) => !renderedLegacyIds.has(card.id))
+          .sort(
+            (first, second) =>
+              (Number.isFinite(Number(first.order))
+                ? Number(first.order)
+                : Number.MAX_SAFE_INTEGER) -
+              (Number.isFinite(Number(second.order))
+                ? Number(second.order)
+                : Number.MAX_SAFE_INTEGER),
+          )
           .forEach((card) => {
             const normalized = normalizeCardImages(
               card,
@@ -3276,6 +3356,7 @@
             );
             const cardElement = document.createElement("div");
             cardElement.className = "property-card dynamic-admin-card";
+            cardElement.dataset.propertyId = card.id;
             cardElement.innerHTML = `
                         <div class="property-carousel">
                             <div class="carousel-container" style="background-image: url('${normalized.image}'); background-size: cover; background-position: center;"></div>
@@ -3395,6 +3476,15 @@
               : container;
             targetContainer?.appendChild(cardElement);
           });
+
+        getAllProperties().forEach((card) => {
+          const targetContainer =
+            card.type === "locacao" ? rentalContainer : container;
+          const cardElement = targetContainer?.querySelector(
+            `.property-card[data-property-id="${card.id}"]`,
+          );
+          if (cardElement) targetContainer.appendChild(cardElement);
+        });
       }
 
       function renderAdminList() {
@@ -3418,6 +3508,10 @@
                       <p>${card.type === "locacao" ? "Locação" : "Venda"} · ${escapeHtml(card.price)}</p>
                     </div>
                     <div class="admin-card-actions">
+                      <div class="admin-order-actions">
+                        <button type="button" class="admin-move-up-btn" data-id="${card.id}" aria-label="Mover para cima">&#9650;</button>
+                        <button type="button" class="admin-move-down-btn" data-id="${card.id}" aria-label="Mover para baixo">&#9660;</button>
+                      </div>
                         <button type="button" class="admin-edit-btn" data-id="${card.id}">Editar</button>
                         <button type="button" class="admin-delete-btn" data-id="${card.id}">Excluir</button>
                     </div>
@@ -3425,6 +3519,25 @@
             `,
           )
           .join("");
+
+        const firstCardId = cards[0]?.id;
+        const lastCardId = cards[cards.length - 1]?.id;
+        list.querySelectorAll(".admin-move-up-btn").forEach((button) => {
+          button.disabled = button.dataset.id === firstCardId;
+          button.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            moveProperty(button.dataset.id, -1);
+          });
+        });
+        list.querySelectorAll(".admin-move-down-btn").forEach((button) => {
+          button.disabled = button.dataset.id === lastCardId;
+          button.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            moveProperty(button.dataset.id, 1);
+          });
+        });
 
         list.querySelectorAll(".admin-edit-btn").forEach((button) => {
           button.addEventListener("click", async () => {
@@ -4075,7 +4188,9 @@
           .join("");
 
         list.querySelectorAll("button[data-image-action]").forEach((button) => {
-          button.addEventListener("click", () => {
+          button.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             const index = Number(button.dataset.imageIndex);
             const offset = button.dataset.imageAction === "up" ? -1 : 1;
             const targetIndex = index + offset;
@@ -4186,8 +4301,20 @@
         .addEventListener("submit", async (event) => {
           event.preventDefault();
 
+          const editingId = document.getElementById("property-id").value;
+          const currentTitle = document
+            .getElementById("property-title")
+            .value.trim();
+          const confirmed = await showConfirmationModal(
+            editingId ? "Atualizar imóvel" : "Salvar imóvel",
+            `Tem certeza que deseja ${editingId ? "atualizar" : "salvar"} <span class="property-title">${escapeHtml(currentTitle || "este imóvel")}</span>?`,
+            editingId ? "Atualizar" : "Salvar",
+            "Cancelar",
+          );
+          if (!confirmed) return;
+
           const id =
-            document.getElementById("property-id").value || String(Date.now());
+            editingId || String(Date.now());
           const title = document.getElementById("property-title").value.trim();
           const price = document.getElementById("property-price").value.trim();
           const type = document.getElementById("property-type").value;
@@ -4229,6 +4356,10 @@
             title,
             price,
             type,
+            order:
+              cardIndex >= 0 && Number.isFinite(Number(existingCards[cardIndex].order))
+                ? Number(existingCards[cardIndex].order)
+                : getAllProperties().length,
             description,
             image: normalized.image,
             images: normalized.images,
@@ -4242,7 +4373,7 @@
             existingCards.unshift(newCard);
           }
 
-          saveStoredProperties(existingCards);
+          await saveStoredProperties(existingCards);
           renderAdminList();
           renderDynamicPropertyCards();
           resetPropertyForm();
