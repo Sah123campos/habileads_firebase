@@ -2811,7 +2811,7 @@
       };
 
       const firebaseApp =
-        typeof firebase !== "undefined" && firebase.apps && firebase.apps.length
+        typeof firebase !== "undefined" && firebase.apps && firebase.apps.length > 0
           ? firebase.app()
           : typeof firebase !== "undefined"
             ? firebase.initializeApp(FIREBASE_CONFIG)
@@ -3023,6 +3023,11 @@
       }
 
       async function saveStoredProperties(cards) {
+        if (!Array.isArray(cards)) {
+          console.error("❌ Erro: cards não é um array", cards);
+          throw new Error("Dados inválidos");
+        }
+
         const normalized = cards.map((card) => {
           if (!card || typeof card !== "object") return card;
           const group = card.group || "";
@@ -3039,6 +3044,7 @@
 
         propertyCache = normalized;
         saveLegacyStoredProperties(normalized);
+        console.log("💾 Imóveis salvos localmente:", normalized);
 
         if (isCloudAvailable()) {
           try {
@@ -4386,10 +4392,17 @@
             existingCards.unshift(newCard);
           }
 
-          await saveStoredProperties(existingCards);
-          renderAdminList();
-          renderDynamicPropertyCards();
-          resetPropertyForm();
+          try {
+            await saveStoredProperties(existingCards);
+            renderAdminList();
+            renderDynamicPropertyCards();
+            resetPropertyForm();
+            alert("✅ Imóvel salvo com sucesso!");
+            console.log("✅ Imóvel salvo:", newCard);
+          } catch (error) {
+            console.error("❌ Erro ao salvar imóvel:", error);
+            alert("Erro ao salvar imóvel. Tente novamente.");
+          }
         });
 
       // =============================================
