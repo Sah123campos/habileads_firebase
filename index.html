@@ -785,30 +785,101 @@
         color: #e25555;
       }
 
-      .admin-trigger {
+      .admin-menu {
         position: fixed;
         right: 20px;
-        bottom: 20px;
+        bottom: 50px;
         z-index: 2000;
+        display: grid;
+        grid-template-columns: 42px 0;
+        grid-template-rows: 42px 0;
+        gap: 8px;
+        transition:
+          grid-template-columns 0.35s ease,
+          grid-template-rows 0.35s ease;
+      }
+
+      .admin-menu.open {
+        grid-template-columns: 42px 230px;
+        grid-template-rows: 42px 42px;
+        align-items: center;
+      }
+
+      .admin-trigger,
+      .admin-trigger-action {
         background: var(--vermelho);
         color: var(--branco);
         border: none;
         border-radius: 999px;
-        padding: 12px 18px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
         cursor: pointer;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
       }
 
-      .admin-trigger:hover {
+      .admin-trigger {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        grid-column: 1;
+        grid-row: 2;
+        align-self: start;
+        transition: transform 0.35s ease;
+      }
+
+      .admin-trigger span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--branco);
+      }
+
+      .admin-trigger-action {
+        display: block;
+        padding: 11px 16px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateX(18px);
+        transition:
+          opacity 0.25s ease,
+          transform 0.35s ease,
+          visibility 0.35s ease;
+      }
+
+      .admin-menu .admin-trigger-action:nth-of-type(2) {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .admin-menu .admin-trigger-action:nth-of-type(3) {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .admin-menu.open .admin-trigger-action {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateX(0);
+      }
+
+      .admin-trigger:hover,
+      .admin-trigger-action:hover {
         background: #b0151c;
       }
 
       .admin-auth,
-      .admin-panel {
+      .admin-panel,
+      .admin-password-panel {
         position: fixed;
         inset: 0;
         background: rgba(7, 26, 45, 0.8);
@@ -820,7 +891,8 @@
       }
 
       .admin-auth.open,
-      .admin-panel.open {
+      .admin-panel.open,
+      .admin-password-panel.open {
         display: flex;
       }
 
@@ -952,6 +1024,19 @@
         border-radius: 14px;
         padding: 20px;
         margin-bottom: 28px;
+      }
+
+      .admin-password-form {
+        background: #fff8f8;
+        border: 1px solid #f0d6d8;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 28px;
+      }
+
+      .admin-password-form h4 {
+        color: var(--azul);
+        margin-bottom: 14px;
       }
 
       .admin-form-row {
@@ -2629,9 +2714,35 @@
     </footer>
 
     <!-- Admin -->
-    <button id="admin-trigger" class="admin-trigger" type="button">
-      Admin
-    </button>
+    <div id="admin-menu" class="admin-menu">
+      <button
+        id="admin-trigger"
+        class="admin-trigger"
+        type="button"
+        aria-label="Abrir menu administrativo"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <button
+        id="admin-trigger-action"
+        class="admin-trigger-action"
+        type="button"
+        aria-label="Abrir área administrativa"
+      >
+        Área administrativa
+      </button>
+      <button
+        id="admin-password-action"
+        class="admin-trigger-action"
+        type="button"
+        aria-label="Alterar senha administrativa"
+      >
+        Alterar senha
+      </button>
+    </div>
 
     <div id="admin-auth" class="admin-auth">
       <div class="admin-box">
@@ -2754,6 +2865,53 @@
     ></div>
 
     <div
+
+    <div id="admin-password-panel" class="admin-password-panel">
+      <div class="admin-panel-box">
+        <div class="admin-panel-header">
+          <h3>Alterar senha</h3>
+          <button type="button" id="admin-close-password-panel" class="admin-close">
+            Fechar
+          </button>
+        </div>
+
+        <form id="change-password-form" class="admin-password-form">
+          <h4>Alterar senha de acesso</h4>
+          <div class="admin-form-row">
+            <div class="field">
+              <label for="current-admin-password">Senha atual</label>
+              <input
+                id="current-admin-password"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="new-admin-password">Nova senha</label>
+              <input
+                id="new-admin-password"
+                type="password"
+                minlength="6"
+                autocomplete="new-password"
+                required
+              />
+            </div>
+          </div>
+          <div class="field">
+            <label for="confirm-admin-password">Confirmar nova senha</label>
+            <input
+              id="confirm-admin-password"
+              type="password"
+              minlength="6"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+          <button type="submit" class="submit-btn">Trocar senha</button>
+        </form>
+      </div>
+    </div>
       id="confirmation-modal"
       class="confirmation-modal"
       role="alertdialog"
@@ -2820,6 +2978,11 @@
       const db = firebaseApp ? firebase.firestore() : null;
 
       const ADMIN_PASSWORD = "habileads2025";
+      const ADMIN_PASSWORD_STORAGE_KEY = "habileads_admin_password";
+      const ADMIN_PASSWORD_COLLECTION = "settings";
+      const ADMIN_PASSWORD_DOCUMENT = "adminCredentials";
+      const PASSWORD_CHANGE_DOCUMENT = "passwordChangeCredentials";
+      const PASSWORD_CHANGE_INITIAL_PASSWORD = "H@b1leads2026";
       const PROPERTY_STORAGE_KEY = "habileads_property_cards";
       const ADMIN_SESSION_KEY = "habileads_admin_logged";
       let propertyCache = [];
@@ -2838,6 +3001,55 @@
           .replace(/>/g, "&gt;")
           .replace(/\"/g, "&quot;")
           .replace(/'/g, "&#039;");
+      }
+
+      function getLegacyAdminPassword() {
+        return localStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY) || ADMIN_PASSWORD;
+      }
+
+      async function hashAdminPassword(password) {
+        if (!window.crypto?.subtle) {
+          throw new Error("A criptografia do navegador não está disponível.");
+        }
+
+        const data = new TextEncoder().encode(password);
+        const hash = await window.crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(hash))
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      async function getCloudPasswordHash(documentId) {
+        if (!isCloudAvailable()) return null;
+
+        try {
+          const snapshot = await db
+            .collection(ADMIN_PASSWORD_COLLECTION)
+            .doc(documentId)
+            .get();
+          return snapshot.exists ? snapshot.data().passwordHash || null : null;
+        } catch (error) {
+          console.error("Erro ao consultar a senha no Firebase:", error);
+          return null;
+        }
+      }
+
+      async function isAdminPasswordValid(password) {
+        const cloudHash = await getCloudPasswordHash(ADMIN_PASSWORD_DOCUMENT);
+        if (cloudHash) {
+          return cloudHash === (await hashAdminPassword(password));
+        }
+
+        return password === getLegacyAdminPassword();
+      }
+
+      async function isPasswordChangePasswordValid(password) {
+        const cloudHash = await getCloudPasswordHash(PASSWORD_CHANGE_DOCUMENT);
+        if (cloudHash) {
+          return cloudHash === (await hashAdminPassword(password));
+        }
+
+        return password === PASSWORD_CHANGE_INITIAL_PASSWORD;
       }
 
       function getLegacyStoredProperties() {
@@ -4105,9 +4317,26 @@
       // =============================================
       // ADMIN PANEL
       // =============================================
+      let adminEntryMode = "panel";
+
+      function openAdminAuth(entryMode = "panel") {
+        adminEntryMode = entryMode;
+        document.getElementById("admin-auth").classList.add("open");
+        document.getElementById("admin-password").value = "";
+        document.getElementById("admin-password").focus();
+      }
+
       function openAdminPanel() {
         document.getElementById("admin-auth").classList.remove("open");
+        document.getElementById("admin-password-panel").classList.remove("open");
         document.getElementById("admin-panel").classList.add("open");
+      }
+
+      function openAdminPasswordPanel() {
+        document.getElementById("admin-auth").classList.remove("open");
+        document.getElementById("admin-panel").classList.remove("open");
+        document.getElementById("admin-password-panel").classList.add("open");
+        document.getElementById("current-admin-password")?.focus();
       }
 
       function closeAdminPanel() {
@@ -4116,29 +4345,116 @@
         resetPropertyForm();
       }
 
+      function closeAdminPasswordPanel() {
+        document.getElementById("admin-password-panel").classList.remove("open");
+        document.getElementById("admin-auth").classList.remove("open");
+        document.getElementById("change-password-form").reset();
+      }
+
       function closeAdminAuth() {
         document.getElementById("admin-auth").classList.remove("open");
         document.getElementById("admin-password").value = "";
       }
 
-      function attemptLogin() {
+      async function attemptLogin() {
         const passwordValue = document
           .getElementById("admin-password")
           .value.trim();
-        if (passwordValue === ADMIN_PASSWORD) {
-          openAdminPanel();
+        const isValid =
+          adminEntryMode === "password"
+            ? await isPasswordChangePasswordValid(passwordValue)
+            : await isAdminPasswordValid(passwordValue);
+        if (isValid) {
+          if (adminEntryMode === "password") {
+            openAdminPasswordPanel();
+          } else {
+            openAdminPanel();
+          }
           document.getElementById("admin-password").value = "";
-          renderAdminList();
-          renderDynamicPropertyCards();
+          if (adminEntryMode === "panel") {
+            renderAdminList();
+            renderDynamicPropertyCards();
+          }
+          adminEntryMode = "panel";
           return;
         }
         alert("Senha incorreta.");
       }
 
+      async function changeAdminPassword(event) {
+        event.preventDefault();
+
+        const currentPassword = document
+          .getElementById("current-admin-password")
+          .value.trim();
+        const newPassword = document
+          .getElementById("new-admin-password")
+          .value.trim();
+        const confirmedPassword = document
+          .getElementById("confirm-admin-password")
+          .value.trim();
+
+        if (!(await isPasswordChangePasswordValid(currentPassword))) {
+          alert("A senha atual está incorreta.");
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          alert("A nova senha deve ter pelo menos 6 caracteres.");
+          return;
+        }
+
+        if (newPassword === ADMIN_PASSWORD || newPassword === currentPassword) {
+          alert("A nova senha deve ser diferente de habileads2025 e da senha atual.");
+          return;
+        }
+
+        if (newPassword !== confirmedPassword) {
+          alert("A confirmação da nova senha não confere.");
+          return;
+        }
+
+        if (!isCloudAvailable()) {
+          alert("Não foi possível salvar a senha no Firebase.");
+          return;
+        }
+
+        try {
+          await db
+            .collection(ADMIN_PASSWORD_COLLECTION)
+            .doc(ADMIN_PASSWORD_DOCUMENT)
+            .set({
+              passwordHash: await hashAdminPassword(newPassword),
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+          localStorage.removeItem(ADMIN_PASSWORD_STORAGE_KEY);
+          document.getElementById("change-password-form").reset();
+          alert("Senha administrativa alterada e salva no Firebase com sucesso.");
+        } catch (error) {
+          console.error("Erro ao salvar a senha no Firebase:", error);
+          alert("Não foi possível salvar a nova senha no Firebase.");
+        }
+      }
+
       document.getElementById("admin-trigger").addEventListener("click", () => {
-        document.getElementById("admin-auth").classList.add("open");
-        document.getElementById("admin-password").value = "";
+        const adminMenu = document.getElementById("admin-menu");
+        const isOpen = adminMenu.classList.toggle("open");
+        document
+          .getElementById("admin-trigger")
+          .setAttribute("aria-expanded", String(isOpen));
       });
+
+      document
+        .getElementById("admin-trigger-action")
+        .addEventListener("click", () => {
+          openAdminAuth("panel");
+        });
+
+      document
+        .getElementById("admin-password-action")
+        .addEventListener("click", () => {
+          openAdminAuth("password");
+        });
 
       document
         .getElementById("admin-auth-close")
@@ -4147,8 +4463,14 @@
         .getElementById("admin-login-btn")
         .addEventListener("click", attemptLogin);
       document
+        .getElementById("change-password-form")
+        .addEventListener("submit", changeAdminPassword);
+      document
         .getElementById("admin-close-panel")
         .addEventListener("click", closeAdminPanel);
+      document
+        .getElementById("admin-close-password-panel")
+        .addEventListener("click", closeAdminPasswordPanel);
       document
         .getElementById("cancel-edit")
         .addEventListener("click", resetPropertyForm);
@@ -4158,6 +4480,14 @@
           closeAdminPanel();
         }
       });
+
+      document
+        .getElementById("admin-password-panel")
+        .addEventListener("click", (event) => {
+          if (!event.target.closest(".admin-panel-box")) {
+            closeAdminPasswordPanel();
+          }
+        });
 
       document.getElementById("admin-auth").addEventListener("click", (event) => {
         if (!event.target.closest(".admin-box")) {
