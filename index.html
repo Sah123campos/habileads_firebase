@@ -3623,7 +3623,9 @@
         });
 
         storedCards
-          .filter((card) => !renderedLegacyIds.has(card.id))
+          .filter(
+            (card) => !card.deleted && !renderedLegacyIds.has(card.id),
+          )
           .sort(
             (first, second) =>
               (Number.isFinite(Number(first.order))
