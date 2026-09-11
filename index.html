@@ -1124,6 +1124,11 @@
         background: #e9f3ff;
       }
 
+      .image-order-actions .image-delete-btn {
+        color: var(--vermelho);
+        background: #fff0f0;
+      }
+
       .image-order-actions button:disabled {
         opacity: 0.4;
         cursor: not-allowed;
@@ -3128,15 +3133,16 @@
       }
 
       function normalizeCardImages(card, fallbackImage = "") {
+        const hasSavedImages = Array.isArray(card?.images);
         const sourceImages = Array.isArray(card?.images)
           ? card.images.filter(Boolean)
           : [];
         const singleImage = card?.image ? [card.image] : [];
-        const list = sourceImages.length ? sourceImages : singleImage;
-        const image = list[0] || card?.image || fallbackImage || "";
+        const list = hasSavedImages ? sourceImages : singleImage;
+        const image = list[0] || (hasSavedImages ? "" : card?.image) || fallbackImage || "";
         return {
           image,
-          images: list.length ? list : image ? [image] : [],
+          images: list.length ? list : hasSavedImages ? [] : image ? [image] : [],
         };
       }
 
@@ -3153,12 +3159,14 @@
       }
 
       function getPropertyImages(card = {}) {
+        const hasSavedImages = Array.isArray(card.images);
         const savedImages = Array.isArray(card.images)
           ? card.images.filter(Boolean)
           : [];
 
+        if (hasSavedImages) return savedImages;
+
         if (card.group && imageGroups[card.group]?.length) {
-          if (savedImages.length > 1) return savedImages;
           return imageGroups[card.group];
         }
 
@@ -4549,6 +4557,7 @@
                 <div class="image-order-actions">
                   <button type="button" data-image-action="up" data-image-index="${index}" ${index === 0 ? "disabled" : ""} aria-label="Mover imagem para cima">&#9650;</button>
                   <button type="button" data-image-action="down" data-image-index="${index}" ${index === orderedImages.length - 1 ? "disabled" : ""} aria-label="Mover imagem para baixo">&#9660;</button>
+                  <button type="button" class="image-delete-btn" data-image-action="delete" data-image-index="${index}" aria-label="Excluir imagem" title="Excluir imagem">&times;</button>
                 </div>
               </div>
             `,
@@ -4560,6 +4569,22 @@
             event.preventDefault();
             event.stopPropagation();
             const index = Number(button.dataset.imageIndex);
+            if (button.dataset.imageAction === "delete") {
+              const [removedImage] = orderedImages.splice(index, 1);
+              if (removedImage?.src?.startsWith("blob:")) {
+                URL.revokeObjectURL(removedImage.src);
+              }
+              if (propertyImageInput) {
+                const dataTransfer = new DataTransfer();
+                orderedImages
+                  .filter((image) => image.file)
+                  .forEach((image) => dataTransfer.items.add(image.file));
+                propertyImageInput.files = dataTransfer.files;
+              }
+              renderImageOrder();
+              updateImagePreview(orderedImages);
+              return;
+            }
             const offset = button.dataset.imageAction === "up" ? -1 : 1;
             const targetIndex = index + offset;
             if (targetIndex < 0 || targetIndex >= orderedImages.length) return;
@@ -4697,7 +4722,7 @@
           );
 
           let images = [];
-          if (orderedImages.length) {
+          if (orderedImages.length || editingId) {
             images = await readOrderedImages();
           } else if (cardIndex >= 0) {
             images = normalizeCardImages(
