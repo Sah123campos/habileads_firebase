@@ -3017,7 +3017,11 @@
           const saved = JSON.parse(
             localStorage.getItem(DELETED_PROPERTY_STORAGE_KEY) || "[]",
           );
-          return new Set(Array.isArray(saved) ? saved : []);
+          const deletedIds = new Set(Array.isArray(saved) ? saved : []);
+          propertyCache
+            .filter((card) => card?.deleted && card.id)
+            .forEach((card) => deletedIds.add(card.id));
+          return deletedIds;
         } catch (error) {
           return new Set();
         }
@@ -3499,6 +3503,7 @@
         const merged = [...staticCards];
 
         storedCards.forEach((card) => {
+          if (card?.deleted) return;
           const index = merged.findIndex((item) => item.id === card.id);
           if (index >= 0) {
             merged[index] = { ...merged[index], ...card };
@@ -3851,9 +3856,9 @@
 
             markPropertyAsDeleted(button.dataset.id);
             const currentCards = getStoredProperties();
-            const updatedCards = currentCards.filter(
-              (item) => item.id !== button.dataset.id,
-            );
+            const updatedCards = currentCards
+              .filter((item) => item.id !== button.dataset.id)
+              .concat({ id: button.dataset.id, deleted: true });
             saveStoredProperties(updatedCards);
 
             renderAdminList();
