@@ -2983,6 +2983,7 @@
       const PASSWORD_CHANGE_DOCUMENT = "passwordChangeCredentials";
       const PASSWORD_CHANGE_INITIAL_PASSWORD = "H@b1leads2026";
       const PROPERTY_STORAGE_KEY = "habileads_property_cards";
+      const DELETED_PROPERTY_STORAGE_KEY = "habileads_deleted_property_ids";
       const ADMIN_SESSION_KEY = "habileads_admin_logged";
       let propertyCache = [];
 
@@ -3004,6 +3005,26 @@
 
       function getLegacyAdminPassword() {
         return localStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY) || ADMIN_PASSWORD;
+      }
+
+      function getDeletedPropertyIds() {
+        try {
+          const saved = JSON.parse(
+            localStorage.getItem(DELETED_PROPERTY_STORAGE_KEY) || "[]",
+          );
+          return new Set(Array.isArray(saved) ? saved : []);
+        } catch (error) {
+          return new Set();
+        }
+      }
+
+      function markPropertyAsDeleted(propertyId) {
+        const deletedIds = getDeletedPropertyIds();
+        deletedIds.add(propertyId);
+        localStorage.setItem(
+          DELETED_PROPERTY_STORAGE_KEY,
+          JSON.stringify([...deletedIds]),
+        );
       }
 
       async function hashAdminPassword(password) {
@@ -3028,7 +3049,9 @@
             .get();
           return snapshot.exists ? snapshot.data().passwordHash || null : null;
         } catch (error) {
-          console.error("Erro ao consultar a senha no Firebase:", error);
+          if (error?.code !== "permission-denied") {
+            console.error("Erro ao consultar a senha no Firebase:", error);
+          }
           return null;
         }
       }
@@ -3068,14 +3091,6 @@
             return card;
           });
 
-          function renderDescriptionItems(description) {
-            return String(description || "Imóvel disponível para avaliação.")
-              .split(/\s*[•|]\s*|\r?\n/)
-              .map((item) => item.trim())
-              .filter(Boolean)
-              .map((item) => `<li>✅ ${escapeHtml(item)}</li>`)
-              .join("");
-          }
           if (JSON.stringify(normalized) !== JSON.stringify(cards)) {
             localStorage.setItem(
               PROPERTY_STORAGE_KEY,
@@ -3361,11 +3376,21 @@
       // =============================================
       // RENDERIZAÇÃO DOS IMÓVEIS
       // =============================================
+      function renderDescriptionItems(description) {
+        return String(description || "Imóvel disponível para avaliação.")
+          .split(/\s*[•|]\s*|\r?\n/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .map((item) => `<li>✅ ${escapeHtml(item)}</li>`)
+          .join("");
+      }
+
       function getStaticPropertyCards() {
         const elements = document.querySelectorAll(
           "#properties-carousel .property-card:not(.dynamic-admin-card)",
         );
         const cards = [];
+        const deletedIds = getDeletedPropertyIds();
 
         elements.forEach((element, index) => {
           // ✅ GERA UM ID ÚNICO BASEADO NO GRUPO
@@ -3381,6 +3406,8 @@
           }
 
           element.dataset.propertyId = id;
+
+          if (deletedIds.has(id)) return;
 
           const info = element.querySelector(".property-info");
           const title =
@@ -3527,6 +3554,12 @@
           .forEach((card) => card.remove());
 
         const staticCards = getStaticPropertyCards();
+        const deletedIds = getDeletedPropertyIds();
+        document
+          .querySelectorAll("#properties-carousel .property-card")
+          .forEach((card) => {
+            if (deletedIds.has(card.dataset.propertyId)) card.remove();
+          });
         const storedCards = getStoredProperties();
         const renderedLegacyIds = new Set();
 
@@ -3808,34 +3841,12 @@
             );
             if (!confirmed) return;
 
+            markPropertyAsDeleted(button.dataset.id);
             const currentCards = getStoredProperties();
             const updatedCards = currentCards.filter(
               (item) => item.id !== button.dataset.id,
             );
             saveStoredProperties(updatedCards);
-
-            const staticCard = document.querySelector(
-              `#properties-carousel .property-card[data-property-id="${button.dataset.id}"]`,
-            );
-            if (staticCard) {
-              const defaultValues = getStaticPropertyCards().find(
-                (item) => item.id === button.dataset.id,
-              );
-              if (defaultValues) {
-                const titleEl = staticCard.querySelector(".property-info h3");
-                const priceEl = staticCard.querySelector(
-                  ".property-info .price",
-                );
-                const listEl = staticCard.querySelector(".property-info ul");
-                const cover = staticCard.querySelector(".carousel-container");
-                if (titleEl) titleEl.textContent = defaultValues.title;
-                if (priceEl) priceEl.textContent = defaultValues.price;
-                if (listEl)
-                  listEl.innerHTML = `<li>✅ ${escapeHtml(defaultValues.description || "Imóvel disponível para avaliação.")}</li>`;
-                if (cover)
-                  cover.style.backgroundImage = `url('${defaultValues.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"}')`;
-              }
-            }
 
             renderAdminList();
             renderDynamicPropertyCards();
