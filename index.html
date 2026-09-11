@@ -3265,7 +3265,7 @@
             "Erro ao sincronizar os imóveis com o Firebase:",
             error,
           );
-          return cards;
+          throw error;
         }
       }
 
@@ -3301,8 +3301,7 @@
             return normalized;
           } catch (error) {
             console.error("❌ Erro ao salvar no Firebase:", error);
-            alert("Erro ao salvar no Firebase. Os dados foram salvos localmente.");
-            return normalized;
+            throw error;
           }
         }
 
@@ -4548,6 +4547,7 @@
       // IMAGE UPLOAD
       // =============================================
       let orderedImages = [];
+      let propertySaveInProgress = false;
 
       function renderImageOrder() {
         const list = document.getElementById("image-order-list");
@@ -4710,9 +4710,17 @@
             "Cancelar",
           );
           if (!confirmed) return;
+          if (propertySaveInProgress) return;
+          propertySaveInProgress = true;
+          const submitButton = event.currentTarget.querySelector(
+            'button[type="submit"]',
+          );
+          if (submitButton) submitButton.disabled = true;
 
-          const id =
-            editingId || String(Date.now());
+          const id = editingId || `property-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
+          if (!editingId) {
+            document.getElementById("property-id").value = id;
+          }
           const title = document.getElementById("property-title").value.trim();
           const price = document.getElementById("property-price").value.trim();
           const type = document.getElementById("property-type").value;
@@ -4780,7 +4788,12 @@
             console.log("✅ Imóvel salvo:", newCard);
           } catch (error) {
             console.error("❌ Erro ao salvar imóvel:", error);
-            alert("Erro ao salvar imóvel. Tente novamente.");
+            alert(
+              `Erro ao salvar imóvel. Os dados foram mantidos no formulário. ${error?.code === "permission-denied" ? "O Firebase recusou a gravação por falta de permissão." : "Verifique a conexão e tente novamente."}`,
+            );
+          } finally {
+            propertySaveInProgress = false;
+            if (submitButton) submitButton.disabled = false;
           }
         });
 
