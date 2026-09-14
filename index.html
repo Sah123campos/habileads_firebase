@@ -3030,6 +3030,40 @@
       let propertyCache = [];
 
       // =============================================
+      // ☁️ CONFIGURAÇÃO DO CLOUDINARY (upload de imagens)
+      // Substitua os dois valores abaixo pelos dados da SUA conta:
+      // 1. Crie uma conta gratuita em https://cloudinary.com
+      // 2. No Dashboard, copie o "Cloud name"
+      // 3. Vá em Settings > Upload > Upload presets > Add upload preset
+      //    e defina o "Signing Mode" como "Unsigned". Copie o nome do preset.
+      // =============================================
+      const CLOUDINARY_CLOUD_NAME = "ptrmfnid";
+      const CLOUDINARY_UPLOAD_PRESET = "habileads_unsigned";
+      const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+      async function uploadImageToCloudinary(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => ({}));
+          throw new Error(
+            errorBody?.error?.message ||
+              "Falha ao enviar imagem para o Cloudinary.",
+          );
+        }
+
+        const data = await response.json();
+        return data.secure_url;
+      }
+
+      // =============================================
       // FUNÇÕES AUXILIARES
       // =============================================
       function isCloudAvailable() {
@@ -3157,16 +3191,12 @@
         }
       }
 
-      // ✅ CORREÇÃO — não salva mais as imagens Base64 no localStorage
-      // (só metadados leves). E nunca lança erro para o fluxo principal.
+      // ✅ Agora as imagens são apenas URLs do Cloudinary (texto curto),
+      // então não há mais risco de estourar o localStorage — podemos
+      // salvar o card completo, incluindo o array de imagens.
       function saveLegacyStoredProperties(cards) {
         try {
-          const lightCards = cards.map((card) => {
-            if (!card || typeof card !== "object") return card;
-            const { images, ...rest } = card; // remove array pesado de imagens
-            return { ...rest, images: [] };
-          });
-          localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(lightCards));
+          localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(cards));
         } catch (error) {
           console.warn(
             "⚠️ localStorage cheio. Ignorando gravação local — Firestore continua sendo a fonte de verdade.",
@@ -4887,21 +4917,20 @@
       // =============================================
       // FORM SUBMIT
       // =============================================
-      function readFileAsDataUrl(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      }
-
+      // ☁️ Agora as imagens novas (com "file") são enviadas ao Cloudinary
+      // e substituídas pela URL retornada. Imagens já existentes (que já
+      // são uma URL do Cloudinary) são mantidas como estão.
       async function readOrderedImages() {
-        return Promise.all(
-          orderedImages.map((image) =>
-            image.file ? readFileAsDataUrl(image.file) : image.src,
-          ),
-        );
+        const urls = [];
+        for (const image of orderedImages) {
+          if (image.file) {
+            const uploadedUrl = await uploadImageToCloudinary(image.file);
+            urls.push(uploadedUrl);
+          } else {
+            urls.push(image.src);
+          }
+        }
+        return urls;
       }
 
       const propertyForm = document.getElementById("property-form");
@@ -4931,7 +4960,11 @@
           if (propertySaveInProgress) return;
           propertySaveInProgress = true;
           const submitButton = propertyForm.querySelector('button[type="submit"]');
-          if (submitButton) submitButton.disabled = true;
+          const originalSubmitLabel = submitButton?.textContent;
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Enviando imagens...";
+          }
 
           const id = editingId || `property-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
           if (!editingId) {
@@ -4949,18 +4982,35 @@
           );
 
           let images = [];
-          if (orderedImages.length || editingId) {
-            images = await readOrderedImages();
-          } else if (cardIndex >= 0) {
-            images = normalizeCardImages(
-              existingCards[cardIndex],
-              legacyCard?.image || "",
-            ).images;
-          } else if (legacyCard) {
-            images = normalizeCardImages(
-              legacyCard,
-              legacyCard.image || "",
-            ).images;
+          try {
+            if (orderedImages.length || editingId) {
+              images = await readOrderedImages();
+            } else if (cardIndex >= 0) {
+              images = normalizeCardImages(
+                existingCards[cardIndex],
+                legacyCard?.image || "",
+              ).images;
+            } else if (legacyCard) {
+              images = normalizeCardImages(
+                legacyCard,
+                legacyCard.image || "",
+              ).images;
+            }
+          } catch (error) {
+            console.error("❌ Erro ao enviar imagens para o Cloudinary:", error);
+            alert(
+              `Não foi possível enviar as imagens para o Cloudinary. ${error?.message || "Verifique sua conexão e as configurações do CLOUDINARY_CLOUD_NAME / CLOUDINARY_UPLOAD_PRESET."}`,
+            );
+            propertySaveInProgress = false;
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = originalSubmitLabel || "Salvar imóvel";
+            }
+            return;
+          }
+
+          if (submitButton) {
+            submitButton.textContent = "Salvando imóvel...";
           }
 
           const normalized = normalizeCardImages(
@@ -5016,7 +5066,10 @@
             }
           } finally {
             propertySaveInProgress = false;
-            if (submitButton) submitButton.disabled = false;
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = originalSubmitLabel || "Salvar imóvel";
+            }
           }
         });
       }
