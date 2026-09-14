@@ -3266,6 +3266,20 @@
           saveLegacyStoredProperties(normalized);
           return normalized;
         } catch (error) {
+          const message = String(error?.message || "").toLowerCase();
+          const isPermissionError =
+            error?.code === "permission-denied" ||
+            message.includes("permission") ||
+            message.includes("forbidden") ||
+            message.includes("unauthorized");
+
+          if (isPermissionError) {
+            console.warn(
+              "⚠️ Firebase bloqueou a gravação por permissão; mantendo os dados apenas localmente.",
+            );
+            return cards;
+          }
+
           console.error(
             "Erro ao sincronizar os imóveis com o Firebase:",
             error,
@@ -3305,6 +3319,20 @@
             console.log("✅ Salvo no Firebase com sucesso!");
             return normalized;
           } catch (error) {
+            const message = String(error?.message || "").toLowerCase();
+            const isPermissionError =
+              error?.code === "permission-denied" ||
+              message.includes("permission") ||
+              message.includes("forbidden") ||
+              message.includes("unauthorized");
+
+            if (isPermissionError) {
+              console.warn(
+                "⚠️ A sincronização com o Firebase foi bloqueada; o imóvel continua salvo localmente.",
+              );
+              return normalized;
+            }
+
             console.error("❌ Erro ao salvar no Firebase:", error);
             throw error;
           }
@@ -4802,9 +4830,18 @@
             console.log("✅ Imóvel salvo:", newCard);
           } catch (error) {
             console.error("❌ Erro ao salvar imóvel:", error);
-            alert(
-              `Erro ao salvar imóvel. Os dados foram mantidos no formulário. ${error?.code === "permission-denied" ? "O Firebase recusou a gravação por falta de permissão." : "Verifique a conexão e tente novamente."}`,
-            );
+            const message = String(error?.message || "").toLowerCase();
+            const isPermissionError =
+              error?.code === "permission-denied" ||
+              message.includes("permission") ||
+              message.includes("forbidden") ||
+              message.includes("unauthorized");
+
+            if (!isPermissionError) {
+              alert(
+                `Erro ao salvar imóvel. Os dados foram mantidos no formulário. ${error?.code === "permission-denied" ? "O Firebase recusou a gravação por falta de permissão." : "Verifique a conexão e tente novamente."}`,
+              );
+            }
           } finally {
             propertySaveInProgress = false;
             if (submitButton) submitButton.disabled = false;
