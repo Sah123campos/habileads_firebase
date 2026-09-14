@@ -3445,10 +3445,29 @@
             id: doc.id,
             ...doc.data(),
           }));
+          const deletedIds = getDeletedPropertyIds();
+          const deletedCloudCards = cards.filter(
+            (card) => card.deleted || deletedIds.has(card.id),
+          );
 
-          if (cards.length > 0) {
-            console.log(`✅ ${cards.length} imóveis carregados do Firebase`);
-            propertyCache = mergeCloudCardsWithLocalImages(cards);
+          if (deletedCloudCards.length) {
+            await Promise.all(
+              deletedCloudCards.map((card) =>
+                db.collection("properties").doc(card.id).delete(),
+              ),
+            );
+            console.log(
+              `✅ ${deletedCloudCards.length} imóveis excluídos anteriormente foram removidos do Firebase`,
+            );
+          }
+
+          const activeCards = cards.filter(
+            (card) => !card.deleted && !deletedIds.has(card.id),
+          );
+
+          if (activeCards.length > 0) {
+            console.log(`✅ ${activeCards.length} imóveis carregados do Firebase`);
+            propertyCache = mergeCloudCardsWithLocalImages(activeCards);
             saveLegacyStoredProperties(propertyCache);
           } else {
             console.log("📂 Nenhum imóvel no Firebase, usando dados locais");
