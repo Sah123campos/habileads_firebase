@@ -3414,6 +3414,13 @@
         return normalized;
       }
 
+      async function deletePropertyFromCloud(propertyId) {
+        if (!isCloudAvailable() || !propertyId) return;
+
+        await db.collection("properties").doc(propertyId).delete();
+        console.log("✅ Imóvel removido do Firebase:", propertyId);
+      }
+
       // =============================================
       // CARREGAMENTO DE DADOS DO FIREBASE
       // =============================================
@@ -4004,12 +4011,23 @@
             );
             if (!confirmed) return;
 
-            markPropertyAsDeleted(button.dataset.id);
+            const propertyId = button.dataset.id;
+            markPropertyAsDeleted(propertyId);
             const currentCards = getStoredProperties();
-            const updatedCards = currentCards
-              .filter((item) => item.id !== button.dataset.id)
-              .concat({ id: button.dataset.id, deleted: true });
-            saveStoredProperties(updatedCards);
+            const updatedCards = currentCards.filter(
+              (item) => item.id !== propertyId,
+            );
+            propertyCache = updatedCards;
+            saveLegacyStoredProperties(updatedCards);
+
+            try {
+              await deletePropertyFromCloud(propertyId);
+            } catch (error) {
+              console.error("❌ Erro ao remover imóvel do Firebase:", error);
+              alert(
+                "O imóvel foi ocultado localmente, mas não foi removido do Firebase. Verifique as regras de permissão e tente novamente.",
+              );
+            }
 
             renderAdminList();
             renderDynamicPropertyCards();
