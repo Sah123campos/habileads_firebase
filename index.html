@@ -426,6 +426,21 @@
       .property-info ul {
         margin: 2px 0 0 14px !important;
         flex-grow: 1;
+        min-height: 0;
+        max-height: 245px;
+        overflow-y: auto;
+        padding-right: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: #c7d0dc transparent;
+      }
+
+      .property-info ul::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .property-info ul::-webkit-scrollbar-thumb {
+        background: #c7d0dc;
+        border-radius: 6px;
       }
 
       .property-info li {
