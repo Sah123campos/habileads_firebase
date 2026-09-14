@@ -3191,6 +3191,11 @@
           const confirmBtn = document.getElementById("confirmation-confirm");
           const cancelBtn = document.getElementById("confirmation-cancel");
 
+          if (!modal || !titleEl || !messageEl || !confirmBtn || !cancelBtn) {
+            resolve(false);
+            return;
+          }
+
           titleEl.textContent = title;
           messageEl.innerHTML = message;
           confirmBtn.textContent = confirmText;
@@ -4301,11 +4306,15 @@
 
       function showImage(index) {
         const images = imageGroups[currentGroup];
+        if (!images || !images.length) return;
+
         currentImageIndex = index;
 
         const modalImg = document.querySelector(".modal-img");
         const counter = document.querySelector(".gallery-counter");
         const thumbnails = document.querySelectorAll(".thumbnail");
+
+        if (!modalImg || !counter) return;
 
         modalImg.src = images[index];
         counter.textContent = `${index + 1} / ${images.length}`;
@@ -4316,12 +4325,8 @@
       }
 
       function handleKeyPress(e) {
-        if (
-          !document
-            .getElementById("modal-fullscreen")
-            .classList.contains("open")
-        )
-          return;
+        const modal = document.getElementById("modal-fullscreen");
+        if (!modal || !modal.classList.contains("open")) return;
 
         const images = imageGroups[currentGroup];
 
@@ -4342,7 +4347,10 @@
       }
 
       function closeModal() {
-        document.getElementById("modal-fullscreen").classList.remove("open");
+        const modal = document.getElementById("modal-fullscreen");
+        if (modal) {
+          modal.classList.remove("open");
+        }
         document.body.classList.remove("modal-open");
         document.removeEventListener("keydown", handleKeyPress);
       }
@@ -4696,15 +4704,23 @@
         );
       }
 
-      document
-        .getElementById("property-form")
-        .addEventListener("submit", async (event) => {
+      const propertyForm = document.getElementById("property-form");
+      if (propertyForm) {
+        propertyForm.addEventListener("submit", async (event) => {
           event.preventDefault();
 
-          const editingId = document.getElementById("property-id").value;
-          const currentTitle = document
-            .getElementById("property-title")
-            .value.trim();
+          const propertyIdInput = document.getElementById("property-id");
+          const titleInput = document.getElementById("property-title");
+          const priceInput = document.getElementById("property-price");
+          const typeInput = document.getElementById("property-type");
+          const descriptionInput = document.getElementById("property-description");
+
+          if (!propertyIdInput || !titleInput || !priceInput || !typeInput || !descriptionInput) {
+            return;
+          }
+
+          const editingId = propertyIdInput.value;
+          const currentTitle = titleInput.value.trim();
           const confirmed = await showConfirmationModal(
             editingId ? "Atualizar imóvel" : "Salvar imóvel",
             `Tem certeza que deseja ${editingId ? "atualizar" : "salvar"} <span class="property-title">${escapeHtml(currentTitle || "este imóvel")}</span>?`,
@@ -4714,21 +4730,17 @@
           if (!confirmed) return;
           if (propertySaveInProgress) return;
           propertySaveInProgress = true;
-          const submitButton = event.currentTarget.querySelector(
-            'button[type="submit"]',
-          );
+          const submitButton = propertyForm.querySelector('button[type="submit"]');
           if (submitButton) submitButton.disabled = true;
 
           const id = editingId || `property-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
           if (!editingId) {
-            document.getElementById("property-id").value = id;
+            propertyIdInput.value = id;
           }
-          const title = document.getElementById("property-title").value.trim();
-          const price = document.getElementById("property-price").value.trim();
-          const type = document.getElementById("property-type").value;
-          const description = document
-            .getElementById("property-description")
-            .value.trim();
+          const title = titleInput.value.trim();
+          const price = priceInput.value.trim();
+          const type = typeInput.value;
+          const description = descriptionInput.value.trim();
           const imageInput = document.getElementById("property-image");
           const existingCards = getStoredProperties();
           const cardIndex = existingCards.findIndex((item) => item.id === id);
@@ -4798,6 +4810,7 @@
             if (submitButton) submitButton.disabled = false;
           }
         });
+      }
 
       // =============================================
       // LINKS E NAVEGAÇÃO
@@ -4953,7 +4966,8 @@
       // EVENTOS DOS BOTÕES FULLSCREEN
       // =============================================
       document.addEventListener("click", function (e) {
-        const btn = e.target.closest(".btn-fullscreen");
+        const target = e.target;
+        const btn = target && target.closest ? target.closest(".btn-fullscreen") : null;
         if (!btn) return;
 
         const group = btn.getAttribute("data-group");
@@ -4969,8 +4983,11 @@
           currentImageIndex = 0;
         }
 
+        const modal = document.getElementById("modal-fullscreen");
+        if (!modal) return;
+
         createGalleryModal(group);
-        document.getElementById("modal-fullscreen").classList.add("open");
+        modal.classList.add("open");
         document.body.classList.add("modal-open");
       });
 
