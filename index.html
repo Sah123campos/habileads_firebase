@@ -2961,6 +2961,28 @@
 
     <script>
       // =============================================
+      // ✅ CORREÇÃO — Limpeza única do localStorage
+      // Remove Base64 gigante acumulado de versões antigas.
+      // Roda antes de qualquer outra coisa.
+      // =============================================
+      (function cleanupLocalStorage() {
+        try {
+          const raw = localStorage.getItem("habileads_property_cards");
+          if (raw && raw.length > 500_000) {
+            localStorage.removeItem("habileads_property_cards");
+            console.log("🧹 localStorage antigo limpo (Base64 grande).");
+          }
+          const deleted = localStorage.getItem("habileads_deleted_property_ids");
+          if (deleted && deleted.length > 200_000) {
+            localStorage.removeItem("habileads_deleted_property_ids");
+            console.log("🧹 Lista de exclusões limpa.");
+          }
+        } catch (e) {
+          console.warn("Erro ao limpar localStorage:", e);
+        }
+      })();
+
+      // =============================================
       // CONFIGURAÇÃO DO FIREBASE
       // =============================================
       const FIREBASE_CONFIG = {
@@ -3027,13 +3049,21 @@
         }
       }
 
+      // ✅ CORREÇÃO — protegida contra QuotaExceededError
       function markPropertyAsDeleted(propertyId) {
-        const deletedIds = getDeletedPropertyIds();
-        deletedIds.add(propertyId);
-        localStorage.setItem(
-          DELETED_PROPERTY_STORAGE_KEY,
-          JSON.stringify([...deletedIds]),
-        );
+        try {
+          const deletedIds = getDeletedPropertyIds();
+          deletedIds.add(propertyId);
+          localStorage.setItem(
+            DELETED_PROPERTY_STORAGE_KEY,
+            JSON.stringify([...deletedIds]),
+          );
+        } catch (error) {
+          console.warn(
+            "⚠️ Não foi possível registrar exclusão no localStorage.",
+            error,
+          );
+        }
       }
 
       async function hashAdminPassword(password) {
@@ -3112,21 +3142,23 @@
         }
       }
 
+      // ✅ CORREÇÃO — não salva mais as imagens Base64 no localStorage
+      // (só metadados leves). E nunca lança erro para o fluxo principal.
       function saveLegacyStoredProperties(cards) {
-        const normalized = cards.map((card) => {
-          if (!card || typeof card !== "object") return card;
-          const group = card.group || "";
-          if (
-            !card.image &&
-            group &&
-            imageGroups[group] &&
-            imageGroups[group][0]
-          ) {
-            return { ...card, image: imageGroups[group][0] };
-          }
-          return card;
-        });
-        localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(normalized));
+        try {
+          const lightCards = cards.map((card) => {
+            if (!card || typeof card !== "object") return card;
+            const { images, ...rest } = card; // remove array pesado de imagens
+            return { ...rest, images: [] };
+          });
+          localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(lightCards));
+        } catch (error) {
+          console.warn(
+            "⚠️ localStorage cheio. Ignorando gravação local — Firestore continua sendo a fonte de verdade.",
+            error,
+          );
+          // Não relança: o Firestore deve continuar funcionando
+        }
       }
 
       function getStoredProperties() {
@@ -3291,7 +3323,11 @@
           );
 
           propertyCache = normalized;
-          saveLegacyStoredProperties(normalized);
+          try {
+            saveLegacyStoredProperties(normalized);
+          } catch (e) {
+            console.warn("⚠️ Falha ao salvar localmente (Firestore OK).", e);
+          }
           return normalized;
         } catch (error) {
           const message = String(error?.message || "").toLowerCase();
@@ -3337,8 +3373,17 @@
         });
 
         propertyCache = normalized;
-        saveLegacyStoredProperties(normalized);
-        console.log("💾 Imóveis salvos localmente:", normalized);
+
+        // ✅ CORREÇÃO — protegido: falha no localStorage NÃO interrompe o Firestore
+        try {
+          saveLegacyStoredProperties(normalized);
+          console.log("💾 Imóveis salvos localmente:", normalized);
+        } catch (error) {
+          console.warn(
+            "⚠️ Falha ao salvar localmente (seguindo para o Firestore):",
+            error,
+          );
+        }
 
         if (isCloudAvailable()) {
           try {
@@ -3465,14 +3510,11 @@
         const deletedIds = getDeletedPropertyIds();
 
         elements.forEach((element, index) => {
-          // ✅ GERA UM ID ÚNICO BASEADO NO GRUPO
           const carousel = element.querySelector(".property-carousel");
           const group = carousel?.getAttribute("data-group");
 
-          // Se tiver grupo, usa o grupo como ID base
           let id = group || `legacy-${index + 1}`;
 
-          // Verifica se já existe um ID salvo no elemento
           if (element.dataset.propertyId) {
             id = element.dataset.propertyId;
           }
@@ -3526,16 +3568,13 @@
         return cards;
       }
 
-      // Função para corrigir cards órfãos (editados com ID errado)
       function fixOrphanCards() {
         const storedCards = getStoredProperties();
         const staticCards = getStaticPropertyCards();
         let fixed = false;
 
         storedCards.forEach((card, index) => {
-          // Se o ID começa com "legacy-" mas tem um grupo correspondente
           if (card.id && card.id.startsWith("legacy-") && card.group) {
-            // Procura um card estático com o mesmo grupo
             const matchingStatic = staticCards.find(
               (s) => s.group === card.group && s.id !== card.id,
             );
