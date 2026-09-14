@@ -3136,6 +3136,34 @@
         return getLegacyStoredProperties();
       }
 
+      function mergeCloudCardsWithLocalImages(cards) {
+        const localCards = getLegacyStoredProperties();
+        const localById = new Map(localCards.map((card) => [card?.id, card]));
+
+        return cards.map((card) => {
+          const localCard = localById.get(card?.id);
+          const cloudImages = Array.isArray(card?.images)
+            ? card.images.filter(Boolean)
+            : card?.image
+              ? [card.image]
+              : [];
+          const localImages = Array.isArray(localCard?.images)
+            ? localCard.images.filter(Boolean)
+            : localCard?.image
+              ? [localCard.image]
+              : [];
+
+          if (localImages.length > cloudImages.length) {
+            return {
+              ...card,
+              image: localImages[0],
+              images: localImages,
+            };
+          }
+          return card;
+        });
+      }
+
       function normalizeCardImages(card, fallbackImage = "") {
         const hasSavedImages = Array.isArray(card?.images);
         const sourceImages = Array.isArray(card?.images)
@@ -3368,8 +3396,8 @@
 
           if (cards.length > 0) {
             console.log(`✅ ${cards.length} imóveis carregados do Firebase`);
-            propertyCache = cards;
-            saveLegacyStoredProperties(cards);
+            propertyCache = mergeCloudCardsWithLocalImages(cards);
+            saveLegacyStoredProperties(propertyCache);
           } else {
             console.log("📂 Nenhum imóvel no Firebase, usando dados locais");
             propertyCache = getLegacyStoredProperties();
@@ -3405,8 +3433,8 @@
 
               console.log(`🔄 Mudança detectada! ${cards.length} imóveis`);
 
-              propertyCache = cards;
-              saveLegacyStoredProperties(cards);
+              propertyCache = mergeCloudCardsWithLocalImages(cards);
+              saveLegacyStoredProperties(propertyCache);
               renderDynamicPropertyCards();
               renderAdminList();
               initCarousels();
@@ -3590,6 +3618,11 @@
         );
         if (!container) return;
 
+        Object.keys(dynamicCarouselIntervals).forEach((id) => {
+          clearInterval(dynamicCarouselIntervals[id]);
+          delete dynamicCarouselIntervals[id];
+        });
+
         const existingAdminCards = container.querySelectorAll(
           ".property-card.dynamic-admin-card",
         );
@@ -3627,7 +3660,11 @@
           );
           renderedLegacyIds.add(card.id);
 
-          if (override && finalCard.group && normalized.images.length) {
+          if (
+            override &&
+            finalCard.group &&
+            normalized.images.length > 1
+          ) {
             imageGroups[finalCard.group] = normalized.images;
             stopCarousel(finalCard.group);
             createCarousel(finalCard.group);
@@ -3678,7 +3715,24 @@
             cardElement.dataset.propertyId = card.id;
             cardElement.innerHTML = `
                         <div class="property-carousel">
-                            <div class="carousel-container" style="background-image: url('${normalized.image}'); background-size: cover; background-position: center;"></div>
+                            <div class="carousel-container">
+                              ${normalized.images
+                                .map(
+                                  (image, index) => `
+                                    <div class="carousel-slide ${index === 0 ? "active" : ""}" style="background-image: url('${image}');" data-index="${index}"></div>
+                                  `,
+                                )
+                                .join("")}
+                            </div>
+                            ${normalized.images.length > 1
+                              ? `<div class="carousel-indicators">
+                                  ${normalized.images
+                                    .map(
+                                      (image, index) => `<div class="carousel-dot ${index === 0 ? "active" : ""}" data-index="${index}"></div>`,
+                                    )
+                                    .join("")}
+                                </div>`
+                              : ""}
                         </div>
                         <div class="property-info">
                             <h3>${escapeHtml(card.title)}</h3>
@@ -3794,6 +3848,29 @@
               ? rentalContainer
               : container;
             targetContainer?.appendChild(cardElement);
+
+            const dynamicSlides = cardElement.querySelectorAll(".carousel-slide");
+            const dynamicDots = cardElement.querySelectorAll(".carousel-dot");
+            const showDynamicSlide = (index) => {
+              dynamicSlides.forEach((slide, slideIndex) => {
+                slide.classList.toggle("active", slideIndex === index);
+              });
+              dynamicDots.forEach((dot, dotIndex) => {
+                dot.classList.toggle("active", dotIndex === index);
+              });
+            };
+            dynamicDots.forEach((dot) => {
+              dot.addEventListener("click", () => {
+                showDynamicSlide(Number(dot.dataset.index));
+              });
+            });
+            if (dynamicSlides.length > 1) {
+              let currentIndex = 0;
+              dynamicCarouselIntervals[card.id] = setInterval(() => {
+                currentIndex = (currentIndex + 1) % dynamicSlides.length;
+                showDynamicSlide(currentIndex);
+              }, 3500);
+            }
           });
 
         getAllProperties().forEach((card) => {
@@ -4586,6 +4663,7 @@
       // =============================================
       let orderedImages = [];
       let propertySaveInProgress = false;
+      const dynamicCarouselIntervals = {};
 
       function renderImageOrder() {
         const list = document.getElementById("image-order-list");
@@ -4665,19 +4743,31 @@
         reader.readAsDataURL(source);
       }
 
+      function addImageFiles(files) {
+        const newImages = Array.from(files || []).map((file) => ({
+          file,
+          name: file.name,
+          src: URL.createObjectURL(file),
+        }));
+        if (!newImages.length) return;
+
+        orderedImages = [...orderedImages, ...newImages];
+        const dataTransfer = new DataTransfer();
+        orderedImages
+          .filter((image) => image.file)
+          .forEach((image) => dataTransfer.items.add(image.file));
+        propertyImageInput.files = dataTransfer.files;
+        renderImageOrder();
+        updateImagePreview(orderedImages);
+      }
+
       const propertyImageInput = document.getElementById("property-image");
       const propertyImageDropzone = document.getElementById(
         "property-image-dropzone",
       );
 
       propertyImageInput.addEventListener("change", function () {
-        orderedImages = Array.from(this.files || []).map((file) => ({
-          file,
-          name: file.name,
-          src: URL.createObjectURL(file),
-        }));
-        renderImageOrder();
-        updateImagePreview(orderedImages);
+        addImageFiles(this.files);
       });
 
       if (propertyImageDropzone) {
@@ -4699,16 +4789,7 @@
           const files = event.dataTransfer && event.dataTransfer.files;
           if (!files || !files.length) return;
 
-          orderedImages = Array.from(files).map((file) => ({
-            file,
-            name: file.name,
-            src: URL.createObjectURL(file),
-          }));
-          const dataTransfer = new DataTransfer();
-          orderedImages.forEach((image) => dataTransfer.items.add(image.file));
-          propertyImageInput.files = dataTransfer.files;
-          renderImageOrder();
-          updateImagePreview(orderedImages);
+          addImageFiles(files);
         });
       }
 
