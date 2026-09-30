@@ -460,6 +460,153 @@
         width: 100%;
       }
 
+      /* ===== Acessibilidade: UserWay + VLibras lado a lado (topo esquerdo) ===== */
+      :root {
+        --acc-left: 14px;
+        --acc-gap: 70px;
+        --acc-top: 10px;
+      }
+
+      .userway_buttons_wrapper,
+      .uw-widget-custom-trigger {
+        position: fixed !important;
+        top: var(--acc-top) !important;
+        left: var(--acc-left) !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 99999 !important;
+      }
+
+      div[vw] {
+        position: fixed !important;
+        top: var(--acc-top) !important;
+        left: calc(var(--acc-left) + var(--acc-gap)) !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: auto !important;
+        height: auto !important;
+        z-index: 99998 !important;
+      }
+
+      div[vw] [vw-access-button] {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+      }
+
+      div[vw] [vw-plugin-wrapper] {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding-top: 60px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        :root {
+          --acc-left: 10px;
+          --acc-gap: 62px;
+          --acc-top: 8px;
+        }
+      }
+
+      /* ===== Botão "Link do imóvel" ===== */
+      .property-info .btn-property-link {
+        margin-top: 8px;
+        font-size: 0.8rem;
+        padding: 8px 20px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: transparent;
+        border: 2px solid var(--azul);
+        color: var(--azul);
+      }
+
+      .property-info ul + .btn-property-link {
+        margin-top: auto;
+      }
+
+      .property-info .btn-property-link:hover {
+        background: var(--azul);
+        color: var(--branco);
+      }
+
+      .property-card.shared-highlight {
+        outline: 4px solid var(--vermelho);
+        outline-offset: 3px;
+        box-shadow: 0 0 25px rgba(209, 26, 33, 0.35);
+        transition: outline-color 0.6s, box-shadow 0.6s;
+      }
+
+      .share-toast {
+        position: fixed;
+        left: 50%;
+        bottom: 90px;
+        transform: translate(-50%, 20px);
+        background: var(--azul);
+        color: var(--branco);
+        padding: 12px 22px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 100000;
+        transition: opacity 0.3s, transform 0.3s;
+        max-width: 90vw;
+        text-align: center;
+      }
+
+      .share-toast.visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      .property-link-box {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+
+      .property-link-box code {
+        flex: 1;
+        min-width: 180px;
+        background: #eef4fb;
+        color: var(--azul);
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        word-break: break-all;
+      }
+
+      .property-link-box button {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 8px;
+        background: var(--azul);
+        color: var(--branco);
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .admin-link-btn {
+        background: #e8f7ec;
+        color: #1f6b35;
+      }
+
       .price {
         color: var(--vermelho);
         font-weight: 800;
@@ -2832,6 +2979,27 @@
           </div>
 
           <div class="field">
+            <label for="property-link">Link do imóvel</label>
+            <input
+              id="property-link"
+              type="text"
+              inputmode="url"
+              autocomplete="off"
+              placeholder="Cole aqui um link próprio (opcional). Se vazio, usamos o link automático."
+            />
+            <small style="display: block; color: #666"
+              >Este é o link que o botão “Link do imóvel” copia. Deixe em
+              branco para usar o link automático do site.</small
+            >
+            <div class="property-link-box" id="property-auto-link-box">
+              <code id="property-auto-link">
+                O link automático aparece aqui depois de salvar o imóvel.
+              </code>
+              <button type="button" id="copy-auto-link">Copiar link</button>
+            </div>
+          </div>
+
+          <div class="field">
             <label for="property-description">Descrição</label>
             <textarea
               id="property-description"
@@ -3564,6 +3732,152 @@
       // =============================================
       // RENDERIZAÇÃO DOS IMÓVEIS
       // =============================================
+      // =============================================
+      // LINK / COMPARTILHAMENTO DE IMÓVEIS
+      // =============================================
+      function getAutoPropertyUrl(id) {
+        const base = window.location.origin + window.location.pathname;
+        return `${base}?imovel=${encodeURIComponent(id)}`;
+      }
+
+      function normalizeCustomLink(value) {
+        const raw = String(value || "").trim();
+        if (!raw) return "";
+        if (/^https?:\/\//i.test(raw)) return raw;
+        return `https://${raw.replace(/^\/+/, "")}`;
+      }
+
+      function getPropertyShareUrl(id) {
+        const card = getAllProperties().find((item) => item.id === id);
+        return normalizeCustomLink(card?.link) || getAutoPropertyUrl(id);
+      }
+
+      let shareToastTimer = null;
+      function showShareToast(message) {
+        let toast = document.getElementById("share-toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "share-toast";
+          toast.className = "share-toast";
+          toast.setAttribute("role", "status");
+          toast.setAttribute("aria-live", "polite");
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.classList.add("visible");
+        clearTimeout(shareToastTimer);
+        shareToastTimer = setTimeout(
+          () => toast.classList.remove("visible"),
+          2600,
+        );
+      }
+
+      async function copyTextToClipboard(text) {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (e) {
+          /* tenta o método antigo abaixo */
+        }
+        try {
+          const area = document.createElement("textarea");
+          area.value = text;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.focus();
+          area.select();
+          const ok = document.execCommand("copy");
+          area.remove();
+          return ok;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function copyPropertyLink(id) {
+        const url = getPropertyShareUrl(id);
+        const copied = await copyTextToClipboard(url);
+        if (copied) {
+          showShareToast("🔗 Link do imóvel copiado!");
+        } else {
+          window.prompt("Copie o link do imóvel:", url);
+        }
+      }
+
+      function decorateShareButtons() {
+        document
+          .querySelectorAll(
+            "#properties-carousel .property-card, #properties-carousel-locacoes .property-card",
+          )
+          .forEach((cardElement) => {
+            const id = cardElement.dataset.propertyId;
+            const info = cardElement.querySelector(".property-info");
+            if (!id || !info || info.querySelector(".btn-property-link")) return;
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "btn btn-property-link";
+            button.setAttribute("aria-label", "Copiar o link deste imóvel");
+            button.innerHTML =
+              '<i class="fas fa-link" aria-hidden="true"></i> Link do imóvel';
+            button.addEventListener("click", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              copyPropertyLink(id);
+            });
+            info.appendChild(button);
+          });
+      }
+
+      let deepLinkDone = false;
+      function openPropertyFromUrl(retry = true) {
+        if (deepLinkDone) return;
+        const wanted = new URLSearchParams(window.location.search).get("imovel");
+        if (!wanted) return;
+
+        const cardElement = Array.from(
+          document.querySelectorAll(".property-card[data-property-id]"),
+        ).find((el) => el.dataset.propertyId === wanted);
+
+        if (!cardElement) {
+          if (retry) setTimeout(() => openPropertyFromUrl(false), 1500);
+          return;
+        }
+
+        deepLinkDone = true;
+        const wrapper = cardElement.closest(".properties-carousel-wrapper");
+
+        // pausa a rolagem automática do carrossel enquanto o imóvel está em foco
+        wrapper?.dispatchEvent(new Event("mouseenter"));
+        setTimeout(() => wrapper?.dispatchEvent(new Event("mouseleave")), 20000);
+
+        document
+          .getElementById("properties")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        setTimeout(() => {
+          if (wrapper) {
+            wrapper.scrollTo({
+              left: Math.max(
+                0,
+                cardElement.offsetLeft -
+                  (wrapper.clientWidth - cardElement.offsetWidth) / 2,
+              ),
+              behavior: "smooth",
+            });
+          }
+          cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          cardElement.classList.add("shared-highlight");
+          setTimeout(
+            () => cardElement.classList.remove("shared-highlight"),
+            6000,
+          );
+        }, 600);
+      }
+
       function renderDescriptionItems(description) {
         return String(description || "Imóvel disponível para avaliação.")
           .split(/\s*[•|]\s*|\r?\n/)
@@ -3991,6 +4305,8 @@
           );
           if (cardElement) targetContainer.appendChild(cardElement);
         });
+
+        decorateShareButtons();
       }
 
       function renderAdminList() {
@@ -4018,6 +4334,7 @@
                         <button type="button" class="admin-move-up-btn" data-id="${card.id}" aria-label="Mover para cima">&#9650;</button>
                         <button type="button" class="admin-move-down-btn" data-id="${card.id}" aria-label="Mover para baixo">&#9660;</button>
                       </div>
+                        <button type="button" class="admin-link-btn" data-id="${card.id}">Copiar link</button>
                         <button type="button" class="admin-edit-btn" data-id="${card.id}">Editar</button>
                         <button type="button" class="admin-delete-btn" data-id="${card.id}">Excluir</button>
                     </div>
@@ -4042,6 +4359,18 @@
             event.preventDefault();
             event.stopPropagation();
             moveProperty(button.dataset.id, 1);
+          });
+        });
+
+        list.querySelectorAll(".admin-link-btn").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const url = getPropertyShareUrl(button.dataset.id);
+            const copied = await copyTextToClipboard(url);
+            if (copied) {
+              showShareToast("🔗 Link do imóvel copiado!");
+            } else {
+              window.prompt("Copie o link do imóvel:", url);
+            }
           });
         });
 
@@ -4107,6 +4436,8 @@
           card.type === "locacao" ? "locacao" : "venda";
         document.getElementById("property-description").value =
           card.description || "";
+        document.getElementById("property-link").value = card.link || "";
+        updateAutoLinkDisplay(card.id);
         const preview = document.getElementById("property-image-preview");
         const fallbackImage = getPropertyFallbackImage(card);
         preview.src = fallbackImage;
@@ -4128,9 +4459,19 @@
         document.getElementById("property-title")?.focus();
       }
 
+      function updateAutoLinkDisplay(id) {
+        const box = document.getElementById("property-auto-link");
+        if (!box) return;
+        box.dataset.url = id ? getAutoPropertyUrl(id) : "";
+        box.textContent = id
+          ? getAutoPropertyUrl(id)
+          : "O link automático aparece aqui depois de salvar o imóvel.";
+      }
+
       function resetPropertyForm() {
         document.getElementById("property-form").reset();
         document.getElementById("property-id").value = "";
+        updateAutoLinkDisplay("");
         orderedImages = [];
         const preview = document.getElementById("property-image-preview");
         preview.src = "";
@@ -4974,6 +5315,9 @@
           const price = priceInput.value.trim();
           const type = typeInput.value;
           const description = descriptionInput.value.trim();
+          const link = normalizeCustomLink(
+            document.getElementById("property-link")?.value,
+          );
           const imageInput = document.getElementById("property-image");
           const existingCards = getStoredProperties();
           const cardIndex = existingCards.findIndex((item) => item.id === id);
@@ -5031,6 +5375,7 @@
                 ? Number(existingCards[cardIndex].order)
                 : getAllProperties().length,
             description,
+            link,
             image: normalized.image,
             images: normalized.images,
             code: legacyCard ? legacyCard.code || "LEGACY" : "ADM",
@@ -5180,6 +5525,9 @@
           // Corrigir cards órfãos
           fixOrphanCards();
 
+          // Abrir imóvel compartilhado (?imovel=ID)
+          openPropertyFromUrl();
+
           if (isCloudAvailable()) {
             listenToRealTimeUpdates();
           }
@@ -5224,6 +5572,20 @@
         });
       });
 
+      document.getElementById("copy-auto-link")?.addEventListener("click", async () => {
+        const url = document.getElementById("property-auto-link")?.dataset.url;
+        if (!url) {
+          showShareToast("Salve o imóvel primeiro para gerar o link.");
+          return;
+        }
+        const copied = await copyTextToClipboard(url);
+        if (copied) {
+          showShareToast("🔗 Link copiado!");
+        } else {
+          window.prompt("Copie o link do imóvel:", url);
+        }
+      });
+
       // =============================================
       // EVENTOS DOS BOTÕES FULLSCREEN
       // =============================================
@@ -5263,5 +5625,20 @@
         });
       }
     </script>
+    <!-- Início do Widget de Acessibilidade UserWay -->
+    <script type="text/javascript">
+      (function (d) {
+        var s = d.createElement("script");
+        s.setAttribute("data-account", "5s6x0JhkUR");
+        s.setAttribute("data-position", 5); // 5 = canto inferior esquerdo
+        s.setAttribute("src", "https://cdn.userway.org/widget.js");
+        (d.body || d.head).appendChild(s);
+      })(document);
+    </script>
+    <noscript
+      >Certifique-se de que o Javascript está ativado para usar o widget de
+      acessibilidade do <a href="https://userway.org">UserWay.org</a>.</noscript
+    >
+    <!-- Fim do Widget de Acessibilidade UserWay -->
   </body>
 </html>
