@@ -3510,7 +3510,13 @@
 
         try {
           const snapshot = await db.collection("properties").get();
-          const existingIds = new Set(snapshot.docs.map((doc) => doc.id));
+          // Lápides (deleted: true) nunca são apagadas: são elas que escondem
+          // os imóveis excluídos para os outros visitantes.
+          const existingIds = new Set(
+            snapshot.docs
+              .filter((doc) => !doc.data().deleted)
+              .map((doc) => doc.id),
+          );
           const incomingIds = new Set(normalized.map((card) => card.id));
 
           await Promise.all(
@@ -3630,8 +3636,22 @@
       async function deletePropertyFromCloud(propertyId) {
         if (!isCloudAvailable() || !propertyId) return;
 
-        await db.collection("properties").doc(propertyId).delete();
-        console.log("✅ Imóvel removido do Firebase:", propertyId);
+        // Grava uma "lápide" em vez de apagar o documento: os imóveis fixos
+        // do HTML só somem para os outros visitantes se a exclusão ficar
+        // registrada no Firestore (o localStorage só existe no navegador do admin).
+        await db.collection("properties").doc(propertyId).set(
+          getPropertyTombstone(propertyId),
+        );
+        console.log("✅ Imóvel marcado como excluído no Firebase:", propertyId);
+      }
+
+      function getPropertyTombstone(propertyId) {
+        return {
+          id: propertyId,
+          deleted: true,
+          // updatedAt é obrigatório: o orderBy("updatedAt") ignora documentos sem ele
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        };
       }
 
       // =============================================
@@ -3654,38 +3674,49 @@
             .orderBy("updatedAt", "desc")
             .get({ source: "server" });
 
-          const cards = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
           const deletedIds = getDeletedPropertyIds();
-          const deletedCloudCards = cards.filter(
-            (card) => card.deleted || deletedIds.has(card.id),
+          const cloudDeletedIds = new Set(
+            snapshot.docs.filter((doc) => doc.data().deleted).map((doc) => doc.id),
+          );
+          // Exclusões feitas antes das lápides existirem só ficaram no
+          // localStorage do admin (inclusive de imóveis fixos do HTML, que nem
+          // têm documento): converte-as em lápides no Firestore.
+          const unmarkedDeletedIds = [...deletedIds].filter(
+            (id) => !cloudDeletedIds.has(id),
           );
 
-          if (deletedCloudCards.length) {
+          const cards = [
+            ...snapshot.docs
+              .filter((doc) => !deletedIds.has(doc.id))
+              .map((doc) => ({ id: doc.id, ...doc.data() })),
+            ...[...deletedIds].map((id) => ({ id, deleted: true })),
+          ];
+
+          if (unmarkedDeletedIds.length) {
             await Promise.all(
-              deletedCloudCards.map((card) =>
-                db.collection("properties").doc(card.id).delete(),
+              unmarkedDeletedIds.map((id) =>
+                db
+                  .collection("properties")
+                  .doc(id)
+                  .set(getPropertyTombstone(id))
+                  .catch((error) =>
+                    console.warn("⚠️ Não foi possível marcar exclusão:", id, error),
+                  ),
               ),
             );
             console.log(
-              `✅ ${deletedCloudCards.length} imóveis excluídos anteriormente foram removidos do Firebase`,
+              `✅ ${unmarkedDeletedIds.length} imóveis excluídos anteriormente foram marcados no Firebase`,
             );
           }
 
-          const activeCards = cards.filter(
-            (card) => !card.deleted && !deletedIds.has(card.id),
-          );
-
-          if (activeCards.length > 0) {
-            console.log(`✅ ${activeCards.length} imóveis carregados do Firebase`);
-            propertyCache = mergeCloudCardsWithLocalImages(activeCards);
-            saveLegacyStoredProperties(propertyCache);
-          } else {
-            console.log("📂 Nenhum imóvel no Firebase, usando dados locais");
-            propertyCache = getLegacyStoredProperties();
-          }
+          // O Firestore respondeu, então ele é a fonte da verdade — mesmo que
+          // venha vazio. Não usar o localStorage aqui: ele pode conter imóveis
+          // já excluídos. As lápides (deleted: true) ficam no cache para que
+          // getDeletedPropertyIds() esconda também os imóveis fixos do HTML.
+          const activeCount = cards.filter((card) => !card.deleted).length;
+          console.log(`✅ ${activeCount} imóveis carregados do Firebase`);
+          propertyCache = mergeCloudCardsWithLocalImages(cards);
+          saveLegacyStoredProperties(propertyCache);
 
           renderDynamicPropertyCards();
           renderAdminList();
@@ -3843,7 +3874,11 @@
         ).find((el) => el.dataset.propertyId === wanted);
 
         if (!cardElement) {
-          if (retry) setTimeout(() => openPropertyFromUrl(false), 1500);
+          if (retry) {
+            setTimeout(() => openPropertyFromUrl(false), 1500);
+          } else {
+            showShareToast("Este imóvel não está mais disponível.");
+          }
           return;
         }
 
