@@ -504,17 +504,14 @@
         right: auto !important;
       }
 
+      /* no celular o botão da UserWay vai para o canto inferior esquerdo,
+         para não ocupar uma faixa inteira acima do cabeçalho */
       @media (max-width: 768px) {
-        header {
-          padding-top: 60px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        :root {
-          --acc-left: 10px;
-          --acc-gap: 62px;
-          --acc-top: 8px;
+        .userway_buttons_wrapper,
+        .uw-widget-custom-trigger {
+          top: auto !important;
+          bottom: 16px !important;
+          left: 16px !important;
         }
       }
 
@@ -1405,13 +1402,36 @@
       }
 
       @media (max-width: 768px) {
+        .container {
+          width: 100%;
+          padding: 0 18px;
+        }
+
+        /* --- Cabeçalho: logo à esquerda, menu à direita, numa linha só --- */
+        header {
+          padding: 10px 0;
+        }
+
         .header-content {
-          flex-direction: column;
+          flex-wrap: wrap;
+        }
+
+        .logo-placeholder {
+          font-size: 21px;
+        }
+
+        .logo-placeholder img {
+          height: 36px !important;
+        }
+
+        .menu-toggle {
+          display: flex;
+          padding: 8px 4px;
         }
 
         nav {
           display: none;
-          width: 100%;
+          flex-basis: 100%;
         }
 
         nav.active {
@@ -1420,102 +1440,190 @@
 
         nav ul {
           flex-direction: column;
-          margin-top: 20px;
+          margin-top: 10px;
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         nav ul li {
-          margin: 10px 0;
+          margin: 0;
           text-align: center;
         }
 
-        .menu-toggle {
-          display: flex;
-          position: absolute;
-          top: 20px;
-          right: 20px;
+        nav ul li a {
+          display: block;
+          padding: 13px 0;
+          font-size: 17px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .about-content {
-          flex-direction: column;
-        }
-
-        .about-image {
-          height: 250px;
+        /* --- Banner principal --- */
+        .hero {
+          padding: 72px 0 80px;
         }
 
         .hero h1 {
-          font-size: 2.2rem;
+          font-size: 2rem;
+          line-height: 1.2;
         }
 
-        .social-media {
-          flex-wrap: wrap;
+        .hero p {
+          font-size: 1.05rem;
+        }
+
+        /* --- Seções e títulos --- */
+        section {
+          padding: 56px 0;
+        }
+
+        .section-title {
+          margin-bottom: 28px;
+        }
+
+        .section-title h2 {
+          font-size: 1.75rem;
+          line-height: 1.2;
+          margin-bottom: 10px;
+        }
+
+        .property-category {
+          margin-bottom: 40px;
+        }
+
+        .property-category-title {
+          font-size: 1.4rem;
+        }
+
+        /* --- Carrossel de imóveis: deslizar com o dedo, o próximo card
+           aparece na borda para indicar que há mais --- */
+        .properties-grid {
+          padding: 0;
         }
 
         .carousel-nav-btn {
-          width: 40px;
-          height: 40px;
-          font-size: 16px;
-        }
-
-        .properties-grid {
-          padding: 0 10px;
+          display: none;
         }
 
         .properties-carousel-wrapper {
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
-          padding: 0 10px 10px;
-        }
-
-        .properties-carousel {
-          gap: 12px;
-          padding: 0;
           scroll-snap-type: x mandatory;
-          scroll-behavior: smooth;
+          scrollbar-width: none;
+          padding: 4px 0 16px;
         }
 
-        .properties-carousel::-webkit-scrollbar {
+        .properties-carousel-wrapper::-webkit-scrollbar {
           display: none;
         }
 
+        .properties-carousel {
+          gap: 14px;
+          padding: 0;
+        }
+
         .property-card {
-          flex: 0 0 100%;
-          min-width: 100%;
-          max-width: 100%;
-          scroll-snap-align: center;
+          flex: 0 0 86%;
+          min-width: 86%;
+          max-width: 86%;
+          scroll-snap-align: start;
           margin: 0;
+          border-radius: 14px;
+        }
+
+        .property-card:hover {
+          transform: none;
+        }
+
+        .property-carousel {
+          height: 220px;
         }
 
         .property-info {
           min-height: auto;
+          padding: 14px 16px 16px;
+        }
+
+        .property-info h3 {
+          font-size: 1rem;
+          margin-bottom: 6px;
+        }
+
+        .property-info p,
+        .detail-info {
+          font-size: 0.85rem;
+        }
+
+        .price {
+          font-size: 1.2rem;
         }
 
         .property-info ul {
-          margin: 0 0 0 12px !important;
+          margin: 4px 0 0 0 !important;
+          max-height: 200px;
         }
 
         .property-info li {
-          font-size: 0.72rem;
+          font-size: 0.85rem;
         }
 
-        .carousel-nav-btn {
-          display: flex;
-          opacity: 0.95;
-          background-color: rgba(255, 255, 255, 0.95);
-          color: var(--azul);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        .property-info .btn {
+          padding: 12px 20px !important;
+          font-size: 0.85rem;
         }
 
-        .carousel-nav-btn.prev {
-          left: 8px;
+        /* --- Sobre --- */
+        .about-content {
+          flex-direction: column;
+          gap: 28px;
         }
 
-        .carousel-nav-btn.next {
-          right: 8px;
+        .about-image {
+          flex: none;
+          width: 100%;
+          height: 220px;
         }
 
-        .properties-carousel-wrapper {
-          padding: 0 40px 10px;
+        /* --- Conceito --- */
+        .magnet-icon {
+          font-size: 48px;
+          margin-bottom: 20px;
+        }
+
+        .concept-content h3 {
+          font-size: 1.5rem;
+        }
+
+        .concept-content p {
+          font-size: 1rem;
+        }
+
+        .h-meaning {
+          padding: 22px 18px;
+        }
+
+        .h-meaning h4 {
+          font-size: 1.25rem;
+        }
+
+        /* --- Contato --- */
+        .address {
+          font-size: 1rem;
+        }
+
+        .social-media {
+          flex-wrap: wrap;
+          gap: 18px;
+          margin-top: 20px;
+        }
+
+        .social-icon {
+          width: 58px;
+          height: 58px;
+          font-size: 1.5rem;
+        }
+
+        /* folga para o texto final não ficar atrás dos botões flutuantes */
+        footer {
+          padding-bottom: 96px;
         }
 
         .gallery-main {
@@ -1735,6 +1843,14 @@
 
         .gallery-main {
           max-height: 50vh;
+        }
+
+        .hero h1 {
+          font-size: 1.75rem;
+        }
+
+        .section-title h2 {
+          font-size: 1.55rem;
         }
 
         .carousel-indicators {
@@ -3187,6 +3303,30 @@
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
       new window.VLibras.Widget("https://vlibras.gov.br/app");
+
+      // O botão do VLibras fica num shadow DOM, fora do alcance do CSS da
+      // página. No celular ele cobria o texto no meio da tela: leva-o para
+      // o canto inferior esquerdo, acima do botão da UserWay.
+      (function placeVLibrasButtonOnMobile(attempt = 0) {
+        const root = document.getElementById("vlibras-access-wrapper")?.shadowRoot;
+        if (!root) {
+          if (attempt < 40) setTimeout(() => placeVLibrasButtonOnMobile(attempt + 1), 500);
+          return;
+        }
+        if (root.getElementById("habileads-vlibras-position")) return;
+        const style = document.createElement("style");
+        style.id = "habileads-vlibras-position";
+        style.textContent = `
+          @media (max-width: 768px) {
+            #vlibras-access {
+              top: auto !important;
+              right: auto !important;
+              bottom: 80px !important;
+              left: 16px !important;
+            }
+          }`;
+        root.appendChild(style);
+      })();
     </script>
 
     <!-- Firebase -->
@@ -4827,10 +4967,7 @@
             ? firstCard.getBoundingClientRect().width
             : 320;
 
-          if (window.innerWidth <= 768) {
-            return Math.max(carouselWrapper.clientWidth * 0.9, width + gap);
-          }
-
+          // avança exatamente um card, para não parar no meio de um
           return width + gap;
         }
 
@@ -5662,6 +5799,10 @@
           mobileMenu.addEventListener("click", function () {
             nav.classList.toggle("active");
           });
+          // fecha o menu do celular ao escolher uma seção
+          nav.querySelectorAll("a").forEach((link) =>
+            link.addEventListener("click", () => nav.classList.remove("active")),
+          );
         }
 
         // Smooth scrolling
