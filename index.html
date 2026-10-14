@@ -3863,6 +3863,25 @@
           });
       }
 
+      async function showPropertyUnavailableMessage() {
+        deepLinkDone = true;
+        const cancelBtn = document.getElementById("confirmation-cancel");
+        if (cancelBtn) cancelBtn.hidden = true;
+
+        await showConfirmationModal(
+          "Imóvel indisponível",
+          "Este imóvel não está mais disponível. Ele pode ter sido vendido ou alugado.<br/><br/>Confira os outros imóveis que temos para você!",
+          "Ver outros imóveis",
+        );
+
+        if (cancelBtn) cancelBtn.hidden = false;
+        // tira o ?imovel= da URL para a mensagem não voltar ao recarregar
+        history.replaceState(null, "", window.location.pathname + window.location.hash);
+        document
+          .getElementById("properties")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
       let deepLinkDone = false;
       function openPropertyFromUrl(retry = true) {
         if (deepLinkDone) return;
@@ -3877,7 +3896,7 @@
           if (retry) {
             setTimeout(() => openPropertyFromUrl(false), 1500);
           } else {
-            showShareToast("Este imóvel não está mais disponível.");
+            showPropertyUnavailableMessage();
           }
           return;
         }
