@@ -1659,6 +1659,57 @@
         transform: translateY(-2px);
       }
 
+      /* ===== Aviso de imóvel indisponível (link ?imovel= antigo) ===== */
+      .confirmation-modal.unavailable {
+        background: rgba(7, 26, 45, 0.92);
+      }
+
+      .confirmation-modal.unavailable .confirmation-content {
+        border-top: 6px solid var(--vermelho);
+        text-align: center;
+      }
+
+      .confirmation-modal.unavailable .confirmation-content h2 {
+        font-size: 1.6rem;
+      }
+
+      .confirmation-modal.unavailable .confirmation-buttons {
+        justify-content: center;
+      }
+
+      .unavailable-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: rgba(209, 26, 33, 0.1);
+        color: var(--vermelho);
+        font-size: 2.2rem;
+      }
+
+      /* os botões flutuantes (UserWay, VLibras) ficam por cima do modal */
+      body.unavailable-open .userway_buttons_wrapper,
+      body.unavailable-open .uw-widget-custom-trigger,
+      body.unavailable-open div[vw],
+      body.unavailable-open #vlibras-access-wrapper {
+        display: none !important;
+      }
+
+      @media (max-width: 480px) {
+        .confirmation-modal.unavailable .confirmation-content {
+          padding: 28px 22px;
+        }
+
+        .confirmation-modal.unavailable .confirmation-btn {
+          width: 100%;
+          padding: 16px;
+          font-size: 1.05rem;
+        }
+      }
+
       @media (max-width: 480px) {
         .gallery-thumbnails {
           gap: 5px;
@@ -3865,7 +3916,16 @@
 
       async function showPropertyUnavailableMessage() {
         deepLinkDone = true;
+        const modal = document.getElementById("confirmation-modal");
+        const titleEl = document.getElementById("confirmation-title");
         const cancelBtn = document.getElementById("confirmation-cancel");
+        const icon = document.createElement("div");
+        icon.className = "unavailable-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.innerHTML = '<i class="fas fa-house-circle-xmark"></i>';
+        titleEl?.before(icon);
+        modal?.classList.add("unavailable");
+        document.body.classList.add("unavailable-open");
         if (cancelBtn) cancelBtn.hidden = true;
 
         await showConfirmationModal(
@@ -3874,6 +3934,9 @@
           "Ver outros imóveis",
         );
 
+        icon.remove();
+        modal?.classList.remove("unavailable");
+        document.body.classList.remove("unavailable-open");
         if (cancelBtn) cancelBtn.hidden = false;
         // tira o ?imovel= da URL para a mensagem não voltar ao recarregar
         history.replaceState(null, "", window.location.pathname + window.location.hash);
