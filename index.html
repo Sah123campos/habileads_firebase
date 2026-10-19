@@ -3600,6 +3600,100 @@
         });
       }
 
+      // =============================================
+      // FOTOS SOB DEMANDA (economiza a cota do Cloudinary)
+      // =============================================
+      // Os cards usam uma versão menor da foto do Cloudinary (~45 KB em vez
+      // de ~190 KB). A galeria em tela cheia continua mostrando a original.
+      const CARD_IMAGE_TRANSFORM = "f_auto,q_auto,c_limit,w_600";
+
+      function cardImageUrl(url) {
+        if (
+          typeof url !== "string" ||
+          !url.includes("res.cloudinary.com/") ||
+          !url.includes("/image/upload/") ||
+          url.includes(`/image/upload/${CARD_IMAGE_TRANSFORM}/`)
+        ) {
+          return url;
+        }
+        return url.replace(
+          "/image/upload/",
+          `/image/upload/${CARD_IMAGE_TRANSFORM}/`,
+        );
+      }
+
+      // Cada slide guarda a foto em data-bg e só baixa quando o card aparece
+      // na tela. Antes, cada visita baixava todas as fotos de todos os imóveis.
+      const visibleCarousels = new WeakSet();
+      let carouselObserver = null;
+
+      function loadBackground(element) {
+        if (!element || !element.dataset.bg) return;
+        element.style.backgroundImage = `url('${element.dataset.bg}')`;
+        delete element.dataset.bg;
+      }
+
+      // Carrega o slide atual e o próximo, para a troca de foto ficar suave.
+      function loadActiveSlides(container) {
+        if (!container) return;
+        loadBackground(container);
+        const slides = container.querySelectorAll(".carousel-slide");
+        if (!slides.length) return;
+        const activeIndex = Math.max(
+          0,
+          Array.from(slides).findIndex((slide) =>
+            slide.classList.contains("active"),
+          ),
+        );
+        loadBackground(slides[activeIndex]);
+        loadBackground(slides[(activeIndex + 1) % slides.length]);
+      }
+
+      // Chamado quando o slide muda: só baixa se o card estiver visível.
+      function refreshCarouselImages(container) {
+        if (container && visibleCarousels.has(container)) {
+          loadActiveSlides(container);
+        }
+      }
+
+      function watchCarousel(container) {
+        if (!container) return;
+        if (!("IntersectionObserver" in window)) {
+          visibleCarousels.add(container);
+          loadActiveSlides(container);
+          return;
+        }
+        if (!carouselObserver) {
+          carouselObserver = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                  visibleCarousels.delete(entry.target);
+                  return;
+                }
+                visibleCarousels.add(entry.target);
+                loadActiveSlides(entry.target);
+                // Adianta a capa dos 2 próximos cards do carrossel horizontal.
+                let card = entry.target.closest(".property-card");
+                for (let i = 0; i < 2 && card; i++) {
+                  card = card.nextElementSibling;
+                  const next = card?.querySelector(".carousel-container");
+                  if (next) loadActiveSlides(next);
+                }
+              });
+            },
+            { rootMargin: "200px" },
+          );
+        }
+        carouselObserver.observe(container);
+      }
+
+      function unwatchCarousel(container) {
+        if (!container) return;
+        carouselObserver?.unobserve(container);
+        visibleCarousels.delete(container);
+      }
+
       function normalizeCardImages(card, fallbackImage = "") {
         const hasSavedImages = Array.isArray(card?.images);
         const sourceImages = Array.isArray(card?.images)
@@ -4307,10 +4401,14 @@
         const existingAdminCards = container.querySelectorAll(
           ".property-card.dynamic-admin-card",
         );
-        existingAdminCards.forEach((card) => card.remove());
+        const removeAdminCard = (card) => {
+          unwatchCarousel(card.querySelector(".carousel-container"));
+          card.remove();
+        };
+        existingAdminCards.forEach(removeAdminCard);
         rentalContainer
           ?.querySelectorAll(".property-card.dynamic-admin-card")
-          .forEach((card) => card.remove());
+          .forEach(removeAdminCard);
 
         const staticCards = getStaticPropertyCards();
         const deletedIds = getDeletedPropertyIds();
@@ -4364,12 +4462,14 @@
           if (listEl)
             listEl.innerHTML = renderDescriptionItems(finalCard.description);
           if (coverEl) {
-            coverEl.style.backgroundImage = `url('${normalized.image}')`;
+            coverEl.dataset.bg = cardImageUrl(normalized.image);
             const firstSlide = coverEl.querySelector(".carousel-slide");
             if (firstSlide) {
-              firstSlide.style.backgroundImage = `url('${normalized.image}')`;
+              firstSlide.dataset.bg = cardImageUrl(normalized.image);
               firstSlide.classList.add("active");
             }
+            watchCarousel(coverEl);
+            refreshCarouselImages(coverEl);
           }
         });
 
@@ -4400,7 +4500,7 @@
                               ${normalized.images
                                 .map(
                                   (image, index) => `
-                                    <div class="carousel-slide ${index === 0 ? "active" : ""}" style="background-image: url('${image}');" data-index="${index}"></div>
+                                    <div class="carousel-slide ${index === 0 ? "active" : ""}" data-bg="${cardImageUrl(image)}" data-index="${index}"></div>
                                   `,
                                 )
                                 .join("")}
@@ -4445,7 +4545,7 @@
                                           .map(
                                             (img, index) => `
                                             <div class="thumbnail ${index === 0 ? "active" : ""}" data-index="${index}">
-                                                <img src="${img}" alt="">
+                                                <img src="${cardImageUrl(img)}" loading="lazy" alt="">
                                             </div>
                                         `,
                                           )
@@ -4530,6 +4630,9 @@
               : container;
             targetContainer?.appendChild(cardElement);
 
+            const dynamicContainer =
+              cardElement.querySelector(".carousel-container");
+            watchCarousel(dynamicContainer);
             const dynamicSlides = cardElement.querySelectorAll(".carousel-slide");
             const dynamicDots = cardElement.querySelectorAll(".carousel-dot");
             const showDynamicSlide = (index) => {
@@ -4539,6 +4642,7 @@
               dynamicDots.forEach((dot, dotIndex) => {
                 dot.classList.toggle("active", dotIndex === index);
               });
+              refreshCarouselImages(dynamicContainer);
             };
             dynamicDots.forEach((dot) => {
               dot.addEventListener("click", () => {
@@ -4581,7 +4685,7 @@
           .map(
             (card) => `
                 <div class="admin-card-item">
-                    <img src="${card.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"}" alt="${escapeHtml(card.title)}" />
+                    <img data-src="${cardImageUrl(card.image) || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"}" alt="${escapeHtml(card.title)}" />
                     <div class="admin-card-info">
                         <h4>${escapeHtml(card.title)}</h4>
                       <p>${card.type === "locacao" ? "Locação" : "Venda"} · ${escapeHtml(card.price)}</p>
@@ -4599,6 +4703,7 @@
             `,
           )
           .join("");
+        loadAdminListImages();
 
         const firstCardId = cards[0]?.id;
         const lastCardId = cards[cards.length - 1]?.id;
@@ -4830,12 +4935,14 @@
         container.innerHTML = images
           .map(
             (img, index) => `
-                <div class="carousel-slide ${index === 0 ? "active" : ""}" 
-                     style="background-image: url('${img}');" 
+                <div class="carousel-slide ${index === 0 ? "active" : ""}"
+                     data-bg="${cardImageUrl(img)}"
                      data-index="${index}"></div>
             `,
           )
           .join("");
+        watchCarousel(container);
+        refreshCarouselImages(container);
 
         indicators.innerHTML = images
           .map(
@@ -4879,6 +4986,7 @@
         slides.forEach((slide, i) => {
           slide.classList.toggle("active", i === index);
         });
+        refreshCarouselImages(container);
 
         const dots = indicators.querySelectorAll(".carousel-dot");
         dots.forEach((dot, i) => {
@@ -5077,7 +5185,7 @@
                           .map(
                             (img, index) => `
                             <div class="thumbnail ${index === currentImageIndex ? "active" : ""}" data-index="${index}">
-                                <img src="${img}" alt="">
+                                <img src="${cardImageUrl(img)}" loading="lazy" alt="">
                             </div>
                         `,
                           )
@@ -5192,6 +5300,18 @@
         document.getElementById("admin-auth").classList.remove("open");
         document.getElementById("admin-password-panel").classList.remove("open");
         document.getElementById("admin-panel").classList.add("open");
+        loadAdminListImages();
+      }
+
+      // As capas da lista do painel só baixam com o painel aberto. Mesmo
+      // escondido, o navegador baixava as capas de todos os imóveis.
+      function loadAdminListImages() {
+        const panel = document.getElementById("admin-panel");
+        if (!panel?.classList.contains("open")) return;
+        panel.querySelectorAll("#admin-property-list img[data-src]").forEach((img) => {
+          img.src = img.dataset.src;
+          img.removeAttribute("data-src");
+        });
       }
 
       function openAdminPasswordPanel() {
