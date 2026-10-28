@@ -11,6 +11,8 @@
 //
 // Na Cloudflare, cadastre o segredo (Settings > Variables and Secrets):
 //   IMAGEKIT_PRIVATE_KEY  (tipo "Secret")
+//   ADMIN_PASSWORD        (tipo "Secret") - a mesma senha do painel de admin.
+//                         Usada quando a senha não está salva no Firestore.
 // =============================================
 
 const FIREBASE_PROJECT_ID = "habileads-f8abe";
@@ -51,7 +53,7 @@ export default {
       return reply({ error: "JSON inválido" }, 400);
     }
 
-    if (!(await isAdminPassword(body.password))) {
+    if (!(await isAdminPassword(body.password, env))) {
       return reply({ error: "Senha de admin inválida" }, 401);
     }
 
@@ -77,8 +79,9 @@ export default {
   },
 };
 
-async function isAdminPassword(password) {
+async function isAdminPassword(password, env) {
   if (typeof password !== "string" || !password) return false;
+  if (env.ADMIN_PASSWORD && password === env.ADMIN_PASSWORD) return true;
   const docUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/settings/adminCredentials`;
   const res = await fetch(docUrl);
   if (!res.ok) return false;
