@@ -3389,37 +3389,112 @@
       let propertyCache = [];
 
       // =============================================
-      // ☁️ CONFIGURAÇÃO DO CLOUDINARY (upload de imagens)
-      // Substitua os dois valores abaixo pelos dados da SUA conta:
-      // 1. Crie uma conta gratuita em https://cloudinary.com
-      // 2. No Dashboard, copie o "Cloud name"
-      // 3. Vá em Settings > Upload > Upload presets > Add upload preset
-      //    e defina o "Signing Mode" como "Unsigned". Copie o nome do preset.
+      // 🖼️ CONFIGURAÇÃO DO IMAGEKIT (upload de imagens)
+      // A Private key NÃO fica aqui: ela fica guardada no Worker da
+      // Cloudflare (pasta cloudflare-worker/). O site pede ao Worker uma
+      // assinatura para cada foto e envia direto para o ImageKit.
       // =============================================
-      const CLOUDINARY_CLOUD_NAME = "ptrmfnid";
-      const CLOUDINARY_UPLOAD_PRESET = "habileads_unsigned";
-      const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+      const IMAGEKIT_PUBLIC_KEY = "public_AJKTjWgTLqj9iXRDy4WMMiG7Pn8=";
+      const IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/mbslapvpk";
+      const IMAGEKIT_UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload";
+      // ⚠️ Cole aqui o endereço do seu Worker (ex.: https://habileads-imagens.SEUNOME.workers.dev)
+      const IMAGE_WORKER_URL = "COLE_AQUI_O_ENDERECO_DO_WORKER";
+      const ADMIN_WORKER_PASSWORD_KEY = "habileads_admin_worker_password";
 
-      async function uploadImageToCloudinary(file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errorBody = await response.json().catch(() => ({}));
-          throw new Error(
-            errorBody?.error?.message ||
-              "Falha ao enviar imagem para o Cloudinary.",
-          );
+      function getAdminPasswordForWorker() {
+        let password = sessionStorage.getItem(ADMIN_WORKER_PASSWORD_KEY);
+        if (!password) {
+          password = (prompt("Digite a senha de admin para enviar/apagar fotos:") || "").trim();
+          if (password) sessionStorage.setItem(ADMIN_WORKER_PASSWORD_KEY, password);
         }
+        return password;
+      }
 
-        const data = await response.json();
-        return data.secure_url;
+      async function callImageWorker(route, payload) {
+        const response = await fetch(`${IMAGE_WORKER_URL}${route}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, password: getAdminPasswordForWorker() }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 401) {
+          sessionStorage.removeItem(ADMIN_WORKER_PASSWORD_KEY);
+        }
+        if (!response.ok) {
+          throw new Error(data.error || `Falha no servidor de imagens (${response.status}).`);
+        }
+        return data;
+      }
+
+      // Comprime a foto no navegador antes do envio: até 1600 px e WebP.
+      // Quem cadastra não precisa fazer nada. Se o navegador não conseguir
+      // ler o formato (ex.: HEIC em alguns PCs), envia o arquivo original.
+      const MAX_IMAGE_SIDE = 1600;
+      async function compressImage(file) {
+        try {
+          const bitmap = await createImageBitmap(file);
+          const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(bitmap.width, bitmap.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(bitmap.width * scale);
+          canvas.height = Math.round(bitmap.height * scale);
+          canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+          bitmap.close?.();
+          const blob = await new Promise((resolve) =>
+            canvas.toBlob(resolve, "image/webp", 0.82),
+          );
+          if (!blob || blob.size >= file.size) return file;
+          const baseName = (file.name || "foto").replace(/\.[^.]+$/, "");
+          return new File([blob], `${baseName}.webp`, { type: "image/webp" });
+        } catch (error) {
+          console.warn("Não foi possível comprimir, enviando original:", error);
+          return file;
+        }
+      }
+
+      function safeFileName(name) {
+        return (
+          String(name || "foto")
+            .normalize("NFD")
+            .replace(/[̀-ͯ]/g, "")
+            .replace(/[^a-zA-Z0-9._-]+/g, "_")
+            .slice(-80) || "foto"
+        );
+      }
+
+      async function uploadImageToImageKit(file, propertyId) {
+        const compressed = await compressImage(file);
+        const { token, expire, signature } = await callImageWorker("/auth", {});
+
+        const formData = new FormData();
+        formData.append("file", compressed);
+        formData.append("fileName", safeFileName(compressed.name));
+        formData.append("folder", `/habileads/${propertyId || "sem-id"}`);
+        formData.append("publicKey", IMAGEKIT_PUBLIC_KEY);
+        formData.append("signature", signature);
+        formData.append("expire", String(expire));
+        formData.append("token", token);
+
+        const response = await fetch(IMAGEKIT_UPLOAD_URL, { method: "POST", body: formData });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data?.message || "Falha ao enviar imagem para o ImageKit.");
+        }
+        return data.url;
+      }
+
+      // Apaga do ImageKit as fotos que saíram do site. Erros aqui não
+      // impedem o salvamento: no pior caso a foto fica sobrando lá.
+      async function deleteImagesFromImageKit(urls) {
+        const toDelete = [...new Set((urls || []).filter(
+          (url) => typeof url === "string" && url.startsWith(IMAGEKIT_URL_ENDPOINT + "/"),
+        ))];
+        if (!toDelete.length) return;
+        try {
+          const { results } = await callImageWorker("/delete", { urls: toDelete });
+          console.log("🗑️ Fotos removidas do ImageKit:", results);
+        } catch (error) {
+          console.warn("Não foi possível apagar fotos do ImageKit:", error);
+        }
       }
 
       // =============================================
@@ -3601,13 +3676,20 @@
       }
 
       // =============================================
-      // FOTOS SOB DEMANDA (economiza a cota do Cloudinary)
+      // FOTOS SOB DEMANDA (economiza a cota de banda)
       // =============================================
       // Os cards usam uma versão menor da foto do Cloudinary (~45 KB em vez
       // de ~190 KB). A galeria em tela cheia continua mostrando a original.
       const CARD_IMAGE_TRANSFORM = "f_auto,q_auto,c_limit,w_600";
 
       function cardImageUrl(url) {
+        if (
+          typeof url === "string" &&
+          url.startsWith(IMAGEKIT_URL_ENDPOINT + "/") &&
+          !url.includes("tr=")
+        ) {
+          return `${url}${url.includes("?") ? "&" : "?"}tr=w-600,q-80`;
+        }
         if (
           typeof url !== "string" ||
           !url.includes("res.cloudinary.com/") ||
@@ -4769,6 +4851,8 @@
             const propertyId = button.dataset.id;
             markPropertyAsDeleted(propertyId);
             const currentCards = getStoredProperties();
+            const removedImages =
+              currentCards.find((item) => item.id === propertyId)?.images || [];
             const updatedCards = currentCards.filter(
               (item) => item.id !== propertyId,
             );
@@ -4777,6 +4861,7 @@
 
             try {
               await deletePropertyFromCloud(propertyId);
+              deleteImagesFromImageKit(removedImages);
             } catch (error) {
               console.error("❌ Erro ao remover imóvel do Firebase:", error);
               alert(
@@ -5347,6 +5432,9 @@
             ? await isPasswordChangePasswordValid(passwordValue)
             : await isAdminPasswordValid(passwordValue);
         if (isValid) {
+          if (adminEntryMode === "panel") {
+            sessionStorage.setItem(ADMIN_WORKER_PASSWORD_KEY, passwordValue);
+          }
           if (adminEntryMode === "password") {
             openAdminPasswordPanel();
           } else {
@@ -5632,14 +5720,14 @@
       // =============================================
       // FORM SUBMIT
       // =============================================
-      // ☁️ Agora as imagens novas (com "file") são enviadas ao Cloudinary
+      // 🖼️ As imagens novas (com "file") são comprimidas e enviadas ao ImageKit
       // e substituídas pela URL retornada. Imagens já existentes (que já
-      // são uma URL do Cloudinary) são mantidas como estão.
-      async function readOrderedImages() {
+      // são uma URL) são mantidas como estão.
+      async function readOrderedImages(propertyId) {
         const urls = [];
         for (const image of orderedImages) {
           if (image.file) {
-            const uploadedUrl = await uploadImageToCloudinary(image.file);
+            const uploadedUrl = await uploadImageToImageKit(image.file, propertyId);
             urls.push(uploadedUrl);
           } else {
             urls.push(image.src);
@@ -5702,7 +5790,7 @@
           let images = [];
           try {
             if (orderedImages.length || editingId) {
-              images = await readOrderedImages();
+              images = await readOrderedImages(id);
             } else if (cardIndex >= 0) {
               images = normalizeCardImages(
                 existingCards[cardIndex],
@@ -5715,9 +5803,9 @@
               ).images;
             }
           } catch (error) {
-            console.error("❌ Erro ao enviar imagens para o Cloudinary:", error);
+            console.error("❌ Erro ao enviar imagens para o ImageKit:", error);
             alert(
-              `Não foi possível enviar as imagens para o Cloudinary. ${error?.message || "Verifique sua conexão e as configurações do CLOUDINARY_CLOUD_NAME / CLOUDINARY_UPLOAD_PRESET."}`,
+              `Não foi possível enviar as imagens. ${error?.message || "Verifique sua conexão e tente novamente."}`,
             );
             propertySaveInProgress = false;
             if (submitButton) {
@@ -5756,6 +5844,11 @@
             group: legacyCard?.group || "",
           };
 
+          const previousImages =
+            cardIndex >= 0 && Array.isArray(existingCards[cardIndex].images)
+              ? existingCards[cardIndex].images
+              : [];
+
           if (cardIndex >= 0) {
             existingCards[cardIndex] = newCard;
           } else {
@@ -5764,6 +5857,9 @@
 
           try {
             await saveStoredProperties(existingCards);
+            deleteImagesFromImageKit(
+              previousImages.filter((url) => !newCard.images.includes(url)),
+            );
             renderAdminList();
             renderDynamicPropertyCards();
             resetPropertyForm();
