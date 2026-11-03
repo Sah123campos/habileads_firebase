@@ -46,6 +46,16 @@ export default {
       return reply({ error: "IMAGEKIT_PRIVATE_KEY não configurada no Worker" }, 500);
     }
 
+    try {
+      return await handle(request, env, reply);
+    } catch (error) {
+      // Sem isso, um erro inesperado volta sem CORS e o site só mostra "Failed to fetch".
+      return reply({ error: `Erro no Worker: ${error?.message || error}` }, 500);
+    }
+  },
+};
+
+async function handle(request, env, reply) {
     let body;
     try {
       body = await request.json();
@@ -76,8 +86,7 @@ export default {
     }
 
     return reply({ error: "Rota não encontrada" }, 404);
-  },
-};
+}
 
 async function isAdminPassword(password, env) {
   if (typeof password !== "string" || !password) return false;
