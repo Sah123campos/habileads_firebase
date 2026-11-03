@@ -3411,11 +3411,20 @@
       }
 
       async function callImageWorker(route, payload) {
-        const response = await fetch(`${IMAGE_WORKER_URL}${route}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...payload, password: getAdminPasswordForWorker() }),
-        });
+        let response;
+        try {
+          response = await fetch(`${IMAGE_WORKER_URL}${route}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, password: getAdminPasswordForWorker() }),
+          });
+        } catch (networkError) {
+          console.error("Worker de imagens inacessível:", IMAGE_WORKER_URL, networkError);
+          throw new Error(
+            `Sem conexão com o servidor de imagens (${IMAGE_WORKER_URL}). ` +
+              "Confira se o Worker está publicado na Cloudflare com esse endereço.",
+          );
+        }
         const data = await response.json().catch(() => ({}));
         if (response.status === 401) {
           sessionStorage.removeItem(ADMIN_WORKER_PASSWORD_KEY);
@@ -3474,7 +3483,13 @@
         formData.append("expire", String(expire));
         formData.append("token", token);
 
-        const response = await fetch(IMAGEKIT_UPLOAD_URL, { method: "POST", body: formData });
+        let response;
+        try {
+          response = await fetch(IMAGEKIT_UPLOAD_URL, { method: "POST", body: formData });
+        } catch (networkError) {
+          console.error("Falha de rede ao enviar para o ImageKit:", networkError);
+          throw new Error("Sem conexão com o ImageKit. Verifique a internet e tente novamente.");
+        }
         const data = await response.json().catch(() => ({}));
         if (!response.ok) {
           throw new Error(data?.message || "Falha ao enviar imagem para o ImageKit.");
