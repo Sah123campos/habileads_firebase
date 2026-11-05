@@ -1147,6 +1147,31 @@
         color: var(--branco);
       }
 
+      .upload-progress {
+        margin-top: 14px;
+      }
+      .upload-progress[hidden] {
+        display: none;
+      }
+      .upload-progress-text {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .upload-progress-track {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+      }
+      .upload-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--vermelho);
+        border-radius: 999px;
+        transition: width 0.2s ease;
+      }
+
       .admin-panel-header {
         display: flex;
         align-items: center;
@@ -3204,6 +3229,12 @@
               Cancelar
             </button>
           </div>
+          <div id="upload-progress" class="upload-progress" hidden>
+            <div id="upload-progress-text" class="upload-progress-text"></div>
+            <div class="upload-progress-track">
+              <div id="upload-progress-bar" class="upload-progress-bar"></div>
+            </div>
+          </div>
         </form>
 
         <div id="admin-property-list" class="admin-list"></div>
@@ -3470,7 +3501,28 @@
         );
       }
 
-      async function uploadImageToImageKit(file, propertyId) {
+      // fetch() não informa o progresso do envio; o XMLHttpRequest sim.
+      function postWithProgress(url, formData, onProgress) {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", url);
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) onProgress?.(event.loaded / event.total);
+          };
+          xhr.onload = () => {
+            let data = {};
+            try {
+              data = JSON.parse(xhr.responseText);
+            } catch {}
+            resolve({ ok: xhr.status >= 200 && xhr.status < 300, data });
+          };
+          xhr.onerror = () =>
+            reject(new Error("Sem conexão com o ImageKit. Verifique a internet e tente novamente."));
+          xhr.send(formData);
+        });
+      }
+
+      async function uploadImageToImageKit(file, propertyId, onProgress) {
         const compressed = await compressImage(file);
         const { token, expire, signature } = await callImageWorker("/auth", {});
 
@@ -3483,15 +3535,8 @@
         formData.append("expire", String(expire));
         formData.append("token", token);
 
-        let response;
-        try {
-          response = await fetch(IMAGEKIT_UPLOAD_URL, { method: "POST", body: formData });
-        } catch (networkError) {
-          console.error("Falha de rede ao enviar para o ImageKit:", networkError);
-          throw new Error("Sem conexão com o ImageKit. Verifique a internet e tente novamente.");
-        }
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) {
+        const { ok, data } = await postWithProgress(IMAGEKIT_UPLOAD_URL, formData, onProgress);
+        if (!ok) {
           throw new Error(data?.message || "Falha ao enviar imagem para o ImageKit.");
         }
         return data.url;
@@ -5738,17 +5783,66 @@
       // 🖼️ As imagens novas (com "file") são comprimidas e enviadas ao ImageKit
       // e substituídas pela URL retornada. Imagens já existentes (que já
       // são uma URL) são mantidas como estão.
-      async function readOrderedImages(propertyId) {
-        const urls = [];
-        for (const image of orderedImages) {
-          if (image.file) {
-            const uploadedUrl = await uploadImageToImageKit(image.file, propertyId);
-            urls.push(uploadedUrl);
-          } else {
-            urls.push(image.src);
+      // Envia até 4 fotos ao mesmo tempo e mostra o progresso na barra.
+      const PARALLEL_UPLOADS = 4;
+      async function readOrderedImages(propertyId, onProgress) {
+        const urls = orderedImages.map((image) => (image.file ? null : image.src));
+        const pending = orderedImages
+          .map((image, index) => ({ file: image.file, index }))
+          .filter((item) => item.file);
+        if (!pending.length) return urls;
+
+        // Pede a senha uma vez só, antes de abrir vários envios juntos.
+        if (!getAdminPasswordForWorker()) {
+          throw new Error("Senha de admin não informada.");
+        }
+
+        const fractions = new Array(pending.length).fill(0);
+        let done = 0;
+        const report = () => {
+          const total = fractions.reduce((sum, value) => sum + value, 0);
+          onProgress?.({ done, total: pending.length, percent: (total / pending.length) * 100 });
+        };
+        report();
+
+        let next = 0;
+        let failed = false;
+        async function worker() {
+          while (next < pending.length && !failed) {
+            const slot = next++;
+            const { file, index } = pending[slot];
+            try {
+              urls[index] = await uploadImageToImageKit(file, propertyId, (fraction) => {
+                fractions[slot] = Math.min(fraction, 0.99);
+                report();
+              });
+            } catch (error) {
+              failed = true; // os outros envios param de pegar fotos novas
+              throw error;
+            }
+            fractions[slot] = 1;
+            done++;
+            report();
           }
         }
+        await Promise.all(
+          Array.from({ length: Math.min(PARALLEL_UPLOADS, pending.length) }, worker),
+        );
         return urls;
+      }
+
+      function setUploadProgress(state) {
+        const box = document.getElementById("upload-progress");
+        if (!box) return;
+        if (!state) {
+          box.hidden = true;
+          return;
+        }
+        const percent = Math.round(state.percent);
+        box.hidden = false;
+        document.getElementById("upload-progress-bar").style.width = `${percent}%`;
+        document.getElementById("upload-progress-text").textContent =
+          `Enviando fotos: ${state.done} de ${state.total} (${percent}%)`;
       }
 
       const propertyForm = document.getElementById("property-form");
@@ -5805,7 +5899,10 @@
           let images = [];
           try {
             if (orderedImages.length || editingId) {
-              images = await readOrderedImages(id);
+              images = await readOrderedImages(id, (state) => {
+                setUploadProgress(state);
+                if (submitButton) submitButton.textContent = `Enviando fotos... ${Math.round(state.percent)}%`;
+              });
             } else if (cardIndex >= 0) {
               images = normalizeCardImages(
                 existingCards[cardIndex],
@@ -5822,6 +5919,7 @@
             alert(
               `Não foi possível enviar as imagens. ${error?.message || "Verifique sua conexão e tente novamente."}`,
             );
+            setUploadProgress(null);
             propertySaveInProgress = false;
             if (submitButton) {
               submitButton.disabled = false;
@@ -5830,6 +5928,7 @@
             return;
           }
 
+          setUploadProgress(null);
           if (submitButton) {
             submitButton.textContent = "Salvando imóvel...";
           }
