@@ -19,6 +19,8 @@ const FIREBASE_PROJECT_ID = "habileads-f8abe";
 const IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/mbslapvpk";
 const ALLOWED_ORIGINS = [
   "https://sah123campos.github.io",
+  "https://habileads.com.br",
+  "https://www.habileads.com.br",
   "http://localhost:5500",
   "http://127.0.0.1:5500",
 ];
