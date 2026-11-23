@@ -215,112 +215,135 @@
         background-color: var(--branco);
       }
 
-      .properties-grid {
-        position: relative;
-        width: 100%;
-        padding: 0 60px;
-      }
-
+      #properties,
       .property-category {
-        margin-bottom: 55px;
+        scroll-margin-top: 90px;
       }
 
-      .property-category:last-child {
-        margin-bottom: 0;
+      .property-category + .property-category {
+        margin-top: 44px;
       }
 
       .property-category-title {
         color: var(--azul);
-        font-size: 1.8rem;
-        margin: 0 0 18px;
-        text-align: center;
+        font-size: 1.45rem;
+        margin-bottom: 16px;
       }
 
-      .properties-carousel-wrapper {
-        position: relative;
+      .catalog-controls {
+        margin: 0 auto 32px;
+        max-width: 640px;
+      }
+
+      .catalog-controls label {
+        display: block;
+        color: var(--azul);
+        font-weight: 700;
+      }
+
+      .catalog-controls input {
         width: 100%;
-        overflow: hidden;
+        padding: 12px;
+        border: 1px solid #73808d;
+        border-radius: 8px;
+        font-size: 1rem;
       }
 
-      .properties-carousel {
+      .catalog-links,
+      .property-actions {
         display: flex;
-        gap: 30px;
-        padding: 10px 0;
-        will-change: transform;
-        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .catalog-links a,
+      #property-back {
+        color: var(--azul);
+        font-weight: 700;
+      }
+
+      .catalog-status {
+        min-height: 1.6em;
+        margin-top: 8px;
+      }
+
+      .property-list {
+        display: grid;
+        gap: 18px;
       }
 
       .property-card {
         background-color: var(--branco);
-        border-radius: 8px;
+        border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s;
-        flex: 0 0 320px;
-        min-width: 320px;
-        max-width: 320px;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+        overflow-wrap: anywhere;
       }
 
-      .property-card:hover {
-        transform: translateY(-10px);
+      .property-card[hidden] {
+        display: none;
       }
 
-      .carousel-nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
-        background-color: var(--branco);
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
+      .property-card .property-carousel {
+        height: 100%;
+        min-height: 240px;
+      }
+
+      .property-card .property-info {
+        padding: 20px 24px;
+      }
+
+      .property-info .property-actions .btn {
+        width: auto;
+        margin: 0;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+
+      .property-actions {
         align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        color: var(--azul);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        z-index: 30;
-        pointer-events: auto;
-        transition: all 0.3s ease;
       }
 
-      .carousel-nav-btn:hover {
-        background-color: var(--vermelho);
-        color: var(--branco);
-        transform: translateY(-50%) scale(1.1);
+      .property-info .btn-fullscreen {
+        margin-top: 12px;
       }
 
-      .carousel-nav-btn:active {
-        transform: translateY(-50%) scale(0.95);
+      .property-link-view .hero,
+      .property-link-view .catalog-heading,
+      .property-link-view .catalog-controls,
+      .property-link-view .property-category:not([data-selected]),
+      .property-link-view .property-category-title,
+      .property-link-view .category-empty,
+      .property-link-view .property-card:not([data-selected]),
+      .property-link-view .btn-property-details {
+        display: none;
       }
 
-      .carousel-nav-btn.prev {
-        left: 10px;
+      .property-link-view .properties {
+        padding-top: 28px;
       }
 
-      .carousel-nav-btn.next {
-        right: 10px;
+      .property-link-view .property-category {
+        margin-top: 16px;
       }
 
-      .carousel-nav-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
+      @media (max-width: 640px) {
+        .property-card {
+          grid-template-columns: minmax(0, 1fr);
+        }
 
-      .carousel-nav-btn:disabled:hover {
-        background-color: var(--branco);
-        color: var(--azul);
-        transform: translateY(-50%) scale(1);
-      }
+        .property-card .property-carousel {
+          height: 220px;
+          min-height: 0;
+        }
 
-      .carousel-nav-btn.prev,
-      .carousel-nav-btn.next {
-        opacity: 1;
-        cursor: pointer;
+        .property-card .property-info {
+          padding: 16px;
+        }
       }
 
       .property-img {
@@ -427,20 +450,6 @@
         margin: 2px 0 0 14px !important;
         flex-grow: 1;
         min-height: 0;
-        max-height: 245px;
-        overflow-y: auto;
-        padding-right: 8px;
-        scrollbar-width: thin;
-        scrollbar-color: #c7d0dc transparent;
-      }
-
-      .property-info ul::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .property-info ul::-webkit-scrollbar-thumb {
-        background: #c7d0dc;
-        border-radius: 6px;
       }
 
       .property-info li {
@@ -536,13 +545,6 @@
       .property-info .btn-property-link:hover {
         background: var(--azul);
         color: var(--branco);
-      }
-
-      .property-card.shared-highlight {
-        outline: 4px solid var(--vermelho);
-        outline-offset: 3px;
-        box-shadow: 0 0 25px rgba(209, 26, 33, 0.35);
-        transition: outline-color 0.6s, box-shadow 0.6s;
       }
 
       .share-toast {
@@ -1510,54 +1512,6 @@
           margin-bottom: 10px;
         }
 
-        .property-category {
-          margin-bottom: 40px;
-        }
-
-        .property-category-title {
-          font-size: 1.4rem;
-        }
-
-        /* --- Carrossel de imóveis: deslizar com o dedo, o próximo card
-           aparece na borda para indicar que há mais --- */
-        .properties-grid {
-          padding: 0;
-        }
-
-        .carousel-nav-btn {
-          display: none;
-        }
-
-        .properties-carousel-wrapper {
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-          scroll-snap-type: x mandatory;
-          scrollbar-width: none;
-          padding: 4px 0 16px;
-        }
-
-        .properties-carousel-wrapper::-webkit-scrollbar {
-          display: none;
-        }
-
-        .properties-carousel {
-          gap: 14px;
-          padding: 0;
-        }
-
-        .property-card {
-          flex: 0 0 86%;
-          min-width: 86%;
-          max-width: 86%;
-          scroll-snap-align: start;
-          margin: 0;
-          border-radius: 14px;
-        }
-
-        .property-card:hover {
-          transform: none;
-        }
-
         .property-carousel {
           height: 220px;
         }
@@ -1793,56 +1747,6 @@
       }
 
       /* ===== Aviso de imóvel indisponível (link ?imovel= antigo) ===== */
-      .confirmation-modal.unavailable {
-        background: rgba(7, 26, 45, 0.92);
-      }
-
-      .confirmation-modal.unavailable .confirmation-content {
-        border-top: 6px solid var(--vermelho);
-        text-align: center;
-      }
-
-      .confirmation-modal.unavailable .confirmation-content h2 {
-        font-size: 1.6rem;
-      }
-
-      .confirmation-modal.unavailable .confirmation-buttons {
-        justify-content: center;
-      }
-
-      .unavailable-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 76px;
-        height: 76px;
-        margin: 0 auto 18px;
-        border-radius: 50%;
-        background: rgba(209, 26, 33, 0.1);
-        color: var(--vermelho);
-        font-size: 2.2rem;
-      }
-
-      /* os botões flutuantes (UserWay, VLibras) ficam por cima do modal */
-      body.unavailable-open .userway_buttons_wrapper,
-      body.unavailable-open .uw-widget-custom-trigger,
-      body.unavailable-open div[vw],
-      body.unavailable-open #vlibras-access-wrapper {
-        display: none !important;
-      }
-
-      @media (max-width: 480px) {
-        .confirmation-modal.unavailable .confirmation-content {
-          padding: 28px 22px;
-        }
-
-        .confirmation-modal.unavailable .confirmation-btn {
-          width: 100%;
-          padding: 16px;
-          font-size: 1.05rem;
-        }
-      }
-
       @media (max-width: 480px) {
         .gallery-thumbnails {
           gap: 5px;
@@ -1959,23 +1863,25 @@
     <!-- Imóveis -->
     <section class="properties" id="properties">
       <div class="container">
-        <div class="section-title">
-          <h2>Imóveis em Destaque</h2>
-          <p>Confira nossas melhores oportunidades do mercado</p>
+        <div class="section-title catalog-heading">
+          <h2>Encontre seu imóvel</h2>
         </div>
-        <div class="property-category">
+        <div class="catalog-controls">
+          <label for="property-search">Buscar imóveis</label>
+          <input id="property-search" type="search" placeholder="Nome, bairro ou código do imóvel" />
+          <div class="catalog-links">
+            <a href="#imoveis-venda">Imóveis à venda</a>
+            <a href="#imoveis-locacao">Imóveis para alugar</a>
+          </div>
+          <p id="catalog-status" class="catalog-status" role="status"></p>
+        </div>
+        <div id="property-link-header" hidden>
+          <a id="property-back" href="./#properties">Ver todos os imóveis</a>
+          <p id="property-link-status" class="catalog-status" role="status"></p>
+        </div>
+        <div class="property-category" id="imoveis-venda">
           <h3 class="property-category-title">Imóveis à venda</h3>
-          <div class="properties-grid">
-          <button
-            class="carousel-nav-btn prev"
-            id="carousel-prev"
-            data-carousel-target="properties-carousel"
-            aria-label="Anterior"
-          >
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="properties-carousel-wrapper">
-            <div class="properties-carousel" id="properties-carousel">
+          <div class="property-list" id="properties-sale">
               <!-- APARTAMENTOS -->
               <div class="property-card">
                 <div
@@ -2899,42 +2805,13 @@
                   </button>
                 </div>
               </div>
-            </div>
           </div>
-          <button
-            class="carousel-nav-btn next"
-            id="carousel-next"
-            data-carousel-target="properties-carousel"
-            aria-label="Próximo"
-          >
-            <i class="fas fa-chevron-right"></i>
-          </button>
-          </div>
+          <p class="category-empty" hidden>Nenhum imóvel à venda encontrado.</p>
         </div>
-        <div class="property-category">
-          <h3 class="property-category-title">Imóveis para locação</h3>
-          <div class="properties-grid">
-            <button
-              class="carousel-nav-btn prev"
-              id="carousel-prev-locacoes"
-              data-carousel-target="properties-carousel-locacoes"
-              aria-label="Anterior"
-            >
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="properties-carousel-wrapper">
-              <div class="properties-carousel" id="properties-carousel-locacoes"></div>
-            </div>
-            <button
-              class="carousel-nav-btn next"
-              id="carousel-next-locacoes"
-              data-carousel-target="properties-carousel-locacoes"
-              aria-label="Próximo"
-            >
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
+        <div class="property-category" id="imoveis-locacao">
+          <h3 class="property-category-title">Imóveis para alugar</h3>
+          <div class="property-list" id="properties-rent"></div>
+          <p class="category-empty" hidden>Nenhum imóvel para alugar encontrado.</p>
         </div>
       </div>
     </section>
@@ -3171,18 +3048,7 @@
           </div>
 
           <div class="field">
-            <label for="property-link">Link do imóvel</label>
-            <input
-              id="property-link"
-              type="text"
-              inputmode="url"
-              autocomplete="off"
-              placeholder="Cole aqui um link próprio (opcional). Se vazio, usamos o link automático."
-            />
-            <small style="display: block; color: #666"
-              >Este é o link que o botão “Link do imóvel” copia. Deixe em
-              branco para usar o link automático do site.</small
-            >
+            <span>Link direto do imóvel</span>
             <div class="property-link-box" id="property-auto-link-box">
               <code id="property-auto-link">
                 O link automático aparece aqui depois de salvar o imóvel.
@@ -3815,13 +3681,6 @@
                 }
                 visibleCarousels.add(entry.target);
                 loadActiveSlides(entry.target);
-                // Adianta a capa dos 2 próximos cards do carrossel horizontal.
-                let card = entry.target.closest(".property-card");
-                for (let i = 0; i < 2 && card; i++) {
-                  card = card.nextElementSibling;
-                  const next = card?.querySelector(".carousel-container");
-                  if (next) loadActiveSlides(next);
-                }
               });
             },
             { rootMargin: "200px" },
@@ -4092,7 +3951,7 @@
           propertyCache = getLegacyStoredProperties();
           renderDynamicPropertyCards();
           renderAdminList();
-          return;
+          return false;
         }
 
         try {
@@ -4148,11 +4007,13 @@
           renderDynamicPropertyCards();
           renderAdminList();
           initCarousels();
+          return true;
         } catch (error) {
           console.error("❌ Erro ao carregar do Firebase:", error);
           propertyCache = getLegacyStoredProperties();
           renderDynamicPropertyCards();
           renderAdminList();
+          return false;
         }
       }
 
@@ -4177,6 +4038,7 @@
 
               propertyCache = mergeCloudCardsWithLocalImages(cards);
               saveLegacyStoredProperties(propertyCache);
+              if (!snapshot.metadata.fromCache) catalogState = "ready";
               renderDynamicPropertyCards();
               renderAdminList();
               initCarousels();
@@ -4194,20 +4056,9 @@
       // LINK / COMPARTILHAMENTO DE IMÓVEIS
       // =============================================
       function getAutoPropertyUrl(id) {
-        const base = window.location.origin + window.location.pathname;
-        return `${base}?imovel=${encodeURIComponent(id)}`;
-      }
-
-      function normalizeCustomLink(value) {
-        const raw = String(value || "").trim();
-        if (!raw) return "";
-        if (/^https?:\/\//i.test(raw)) return raw;
-        return `https://${raw.replace(/^\/+/, "")}`;
-      }
-
-      function getPropertyShareUrl(id) {
-        const card = getAllProperties().find((item) => item.id === id);
-        return normalizeCustomLink(card?.link) || getAutoPropertyUrl(id);
+        const url = new URL(window.location.pathname, window.location.origin);
+        url.searchParams.set("imovel", id);
+        return url.href;
       }
 
       let shareToastTimer = null;
@@ -4256,7 +4107,7 @@
       }
 
       async function copyPropertyLink(id) {
-        const url = getPropertyShareUrl(id);
+        const url = getAutoPropertyUrl(id);
         const copied = await copyTextToClipboard(url);
         if (copied) {
           showShareToast("🔗 Link do imóvel copiado!");
@@ -4265,110 +4116,92 @@
         }
       }
 
-      function decorateShareButtons() {
-        document
-          .querySelectorAll(
-            "#properties-carousel .property-card, #properties-carousel-locacoes .property-card",
-          )
-          .forEach((cardElement) => {
-            const id = cardElement.dataset.propertyId;
-            const info = cardElement.querySelector(".property-info");
-            if (!id || !info || info.querySelector(".btn-property-link")) return;
+      const linkedPropertyId = new URLSearchParams(window.location.search).get("imovel");
+      let catalogState = "loading";
+      let openedLinkedProperty = false;
 
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "btn btn-property-link";
-            button.setAttribute("aria-label", "Copiar o link deste imóvel");
-            button.innerHTML =
-              '<i class="fas fa-link" aria-hidden="true"></i> Link do imóvel';
-            button.addEventListener("click", (event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              copyPropertyLink(id);
-            });
-            info.appendChild(button);
-          });
+      function decoratePropertyActions() {
+        document.querySelectorAll(".property-list .property-card").forEach((card) => {
+          const id = card.dataset.propertyId;
+          const info = card.querySelector(".property-info");
+          if (!id || !info || info.querySelector(".property-actions")) return;
+
+          const actions = document.createElement("div");
+          actions.className = "property-actions";
+
+          const details = document.createElement("a");
+          details.className = "btn btn-property-details";
+          details.href = getAutoPropertyUrl(id);
+          details.textContent = "Ver imóvel";
+
+          const copy = document.createElement("button");
+          copy.type = "button";
+          copy.className = "btn btn-property-link";
+          copy.textContent = "Copiar link";
+          copy.setAttribute("aria-label", "Copiar o link deste imóvel");
+          copy.addEventListener("click", () => copyPropertyLink(id));
+
+          actions.append(details, copy);
+          info.appendChild(actions);
+        });
       }
 
-      async function showPropertyUnavailableMessage() {
-        deepLinkDone = true;
-        const modal = document.getElementById("confirmation-modal");
-        const titleEl = document.getElementById("confirmation-title");
-        const cancelBtn = document.getElementById("confirmation-cancel");
-        const icon = document.createElement("div");
-        icon.className = "unavailable-icon";
-        icon.setAttribute("aria-hidden", "true");
-        icon.innerHTML = '<i class="fas fa-house-circle-xmark"></i>';
-        titleEl?.before(icon);
-        modal?.classList.add("unavailable");
-        document.body.classList.add("unavailable-open");
-        if (cancelBtn) cancelBtn.hidden = true;
-
-        await showConfirmationModal(
-          "Imóvel indisponível",
-          "Este imóvel não está mais disponível. Ele pode ter sido vendido ou alugado.<br/><br/>Confira os outros imóveis que temos para você!",
-          "Ver outros imóveis",
-        );
-
-        icon.remove();
-        modal?.classList.remove("unavailable");
-        document.body.classList.remove("unavailable-open");
-        if (cancelBtn) cancelBtn.hidden = false;
-        // tira o ?imovel= da URL para a mensagem não voltar ao recarregar
-        history.replaceState(null, "", window.location.pathname + window.location.hash);
-        document
-          .getElementById("properties")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      function normalizeSearchText(text) {
+        return text.normalize("NFD").replace(/\p{M}/gu, "").toLocaleLowerCase("pt-BR");
       }
 
-      let deepLinkDone = false;
-      function openPropertyFromUrl(retry = true) {
-        if (deepLinkDone) return;
-        const wanted = new URLSearchParams(window.location.search).get("imovel");
-        if (!wanted) return;
+      function updateCatalogView() {
+        const cards = document.querySelectorAll(".property-list .property-card");
+        const categories = document.querySelectorAll(".property-category");
 
-        const cardElement = Array.from(
-          document.querySelectorAll(".property-card[data-property-id]"),
-        ).find((el) => el.dataset.propertyId === wanted);
+        if (linkedPropertyId) {
+          const selected = [...cards].find((card) => card.dataset.propertyId === linkedPropertyId);
+          cards.forEach((card) => card.toggleAttribute("data-selected", card === selected));
+          categories.forEach((category) => category.toggleAttribute(
+            "data-selected", Boolean(selected && category.contains(selected)),
+          ));
 
-        if (!cardElement) {
-          if (retry) {
-            setTimeout(() => openPropertyFromUrl(false), 1500);
-          } else {
-            showPropertyUnavailableMessage();
+          const status = document.getElementById("property-link-status");
+          status.textContent = selected
+            ? ""
+            : {
+                loading: "Carregando imóvel…",
+                ready: "Este imóvel está indisponível. Confira os outros anúncios do catálogo.",
+                error: "Não foi possível carregar o imóvel agora. Tente novamente em instantes.",
+              }[catalogState];
+          status.hidden = Boolean(selected);
+
+          const title = selected?.querySelector("h3");
+          document.title = title ? `${title.textContent} | HABILEADS` : "Imóvel | HABILEADS";
+          if (title && !openedLinkedProperty) {
+            openedLinkedProperty = true;
+            title.tabIndex = -1;
+            title.focus({ preventScroll: true });
           }
           return;
         }
 
-        deepLinkDone = true;
-        const wrapper = cardElement.closest(".properties-carousel-wrapper");
+        const search = document.getElementById("property-search");
+        const terms = normalizeSearchText(search.value.trim()).split(/\s+/).filter(Boolean);
+        let visibleCount = 0;
+        cards.forEach((card) => {
+          const info = card.querySelector(".property-info");
+          const text = [...info.querySelectorAll("h3, p, li")]
+            .map((element) => element.textContent)
+            .join(" ");
+          const normalized = normalizeSearchText(text);
+          card.hidden = !terms.every((term) => normalized.includes(term));
+          if (!card.hidden) visibleCount++;
+        });
 
-        // pausa a rolagem automática do carrossel enquanto o imóvel está em foco
-        wrapper?.dispatchEvent(new Event("mouseenter"));
-        setTimeout(() => wrapper?.dispatchEvent(new Event("mouseleave")), 20000);
-
-        document
-          .getElementById("properties")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-        setTimeout(() => {
-          if (wrapper) {
-            wrapper.scrollTo({
-              left: Math.max(
-                0,
-                cardElement.offsetLeft -
-                  (wrapper.clientWidth - cardElement.offsetWidth) / 2,
-              ),
-              behavior: "smooth",
-            });
-          }
-          cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
-          cardElement.classList.add("shared-highlight");
-          setTimeout(
-            () => cardElement.classList.remove("shared-highlight"),
-            6000,
-          );
-        }, 600);
+        categories.forEach((category) => {
+          const hasResults = category.querySelector(".property-card:not([hidden])");
+          category.querySelector(".category-empty").hidden =
+            Boolean(hasResults) || catalogState === "loading";
+        });
+        document.getElementById("catalog-status").textContent = catalogState === "loading"
+          ? "Carregando catálogo…"
+          : `${visibleCount} ${visibleCount === 1 ? "imóvel encontrado" : "imóveis encontrados"}`;
       }
 
       function renderDescriptionItems(description) {
@@ -4382,7 +4215,7 @@
 
       function getStaticPropertyCards() {
         const elements = document.querySelectorAll(
-          "#properties-carousel .property-card:not(.dynamic-admin-card)",
+          ".property-list .property-card:not(.dynamic-admin-card)",
         );
         const cards = [];
         const deletedIds = getDeletedPropertyIds();
@@ -4529,9 +4362,9 @@
       }
 
       function renderDynamicPropertyCards() {
-        const container = document.getElementById("properties-carousel");
+        const container = document.getElementById("properties-sale");
         const rentalContainer = document.getElementById(
-          "properties-carousel-locacoes",
+          "properties-rent",
         );
         if (!container) return;
 
@@ -4555,7 +4388,7 @@
         const staticCards = getStaticPropertyCards();
         const deletedIds = getDeletedPropertyIds();
         document
-          .querySelectorAll("#properties-carousel .property-card")
+          .querySelectorAll(".property-list .property-card")
           .forEach((card) => {
             if (deletedIds.has(card.dataset.propertyId)) card.remove();
           });
@@ -4565,7 +4398,7 @@
         staticCards.forEach((card) => {
           const override = storedCards.find((item) => item.id === card.id);
           const targetCard = document.querySelector(
-            `#properties-carousel .property-card[data-property-id="${card.id}"]`,
+            `.property-list .property-card[data-property-id="${CSS.escape(card.id)}"]`,
           );
           if (!targetCard) return;
 
@@ -4803,13 +4636,14 @@
         getAllProperties().forEach((card) => {
           const targetContainer =
             card.type === "locacao" ? rentalContainer : container;
-          const cardElement = targetContainer?.querySelector(
-            `.property-card[data-property-id="${card.id}"]`,
+          const cardElement = document.querySelector(
+            `.property-list .property-card[data-property-id="${CSS.escape(card.id)}"]`,
           );
-          if (cardElement) targetContainer.appendChild(cardElement);
+          if (cardElement) targetContainer?.appendChild(cardElement);
         });
 
-        decorateShareButtons();
+        decoratePropertyActions();
+        updateCatalogView();
       }
 
       function renderAdminList() {
@@ -4868,7 +4702,7 @@
 
         list.querySelectorAll(".admin-link-btn").forEach((button) => {
           button.addEventListener("click", async () => {
-            const url = getPropertyShareUrl(button.dataset.id);
+            const url = getAutoPropertyUrl(button.dataset.id);
             const copied = await copyTextToClipboard(url);
             if (copied) {
               showShareToast("🔗 Link do imóvel copiado!");
@@ -4943,7 +4777,6 @@
           card.type === "locacao" ? "locacao" : "venda";
         document.getElementById("property-description").value =
           card.description || "";
-        document.getElementById("property-link").value = card.link || "";
         updateAutoLinkDisplay(card.id);
         const preview = document.getElementById("property-image-preview");
         const fallbackImage = getPropertyFallbackImage(card);
@@ -5185,126 +5018,6 @@
             startCarousel(group);
           }
         });
-      }
-
-      // =============================================
-      // CARROSSEL HORIZONTAL
-      // =============================================
-      function initPropertiesCarousel(
-        carouselId = "properties-carousel",
-        prevId = "carousel-prev",
-        nextId = "carousel-next",
-      ) {
-        const carousel = document.getElementById(carouselId);
-        const prevBtn = document.getElementById(prevId);
-        const nextBtn = document.getElementById(nextId);
-
-        if (!carousel || !prevBtn || !nextBtn) return;
-
-        const carouselWrapper = carousel.parentElement;
-        if (!carouselWrapper) return;
-
-        let currentPosition = 0;
-        let autoScrollInterval = null;
-        let isPaused = false;
-
-        function getGap() {
-          const comp = window.getComputedStyle(carousel);
-          return parseInt(comp.getPropertyValue("gap")) || 30;
-        }
-
-        function getScrollAmount() {
-          const firstCard = carousel.querySelector(".property-card");
-          const gap = getGap();
-          const width = firstCard
-            ? firstCard.getBoundingClientRect().width
-            : 320;
-
-          // avança exatamente um card, para não parar no meio de um
-          return width + gap;
-        }
-
-        function getMaxScroll() {
-          return Math.max(
-            0,
-            carousel.scrollWidth - carouselWrapper.clientWidth,
-          );
-        }
-
-        function scrollCarousel(direction) {
-          const maxScroll = getMaxScroll();
-          const scrollAmount = getScrollAmount();
-          const currentScroll = carouselWrapper.scrollLeft;
-
-          let nextPosition = currentScroll;
-
-          if (direction === "next") {
-            nextPosition =
-              currentScroll >= maxScroll
-                ? 0
-                : Math.min(currentScroll + scrollAmount, maxScroll);
-          } else {
-            nextPosition =
-              currentScroll <= 0
-                ? maxScroll
-                : Math.max(currentScroll - scrollAmount, 0);
-          }
-
-          currentPosition = nextPosition;
-          carouselWrapper.scrollTo({
-            left: currentPosition,
-            behavior: "smooth",
-          });
-        }
-
-        function startAutoScroll() {
-          if (autoScrollInterval) return;
-
-          autoScrollInterval = setInterval(() => {
-            if (!isPaused) {
-              scrollCarousel("next");
-            }
-          }, 4000);
-        }
-
-        function stopAutoScroll() {
-          if (autoScrollInterval) {
-            clearInterval(autoScrollInterval);
-            autoScrollInterval = null;
-          }
-        }
-
-        prevBtn.addEventListener("click", () => {
-          stopAutoScroll();
-          scrollCarousel("prev");
-          setTimeout(startAutoScroll, 500);
-        });
-
-        nextBtn.addEventListener("click", () => {
-          stopAutoScroll();
-          scrollCarousel("next");
-          setTimeout(startAutoScroll, 500);
-        });
-
-        carouselWrapper.addEventListener("mouseenter", () => {
-          isPaused = true;
-        });
-
-        carouselWrapper.addEventListener("mouseleave", () => {
-          isPaused = false;
-        });
-
-        window.addEventListener("resize", () => {
-          const max = getMaxScroll();
-          if (currentPosition > max) {
-            currentPosition = Math.max(0, max);
-          }
-          carouselWrapper.scrollTo({ left: currentPosition, behavior: "auto" });
-        });
-
-        prevBtn.disabled = false;
-        nextBtn.disabled = false;
-        startAutoScroll();
       }
 
       // =============================================
@@ -5886,9 +5599,6 @@
           const price = priceInput.value.trim();
           const type = typeInput.value;
           const description = descriptionInput.value.trim();
-          const link = normalizeCustomLink(
-            document.getElementById("property-link")?.value,
-          );
           const imageInput = document.getElementById("property-image");
           const existingCards = getStoredProperties();
           const cardIndex = existingCards.findIndex((item) => item.id === id);
@@ -5951,7 +5661,7 @@
                 ? Number(existingCards[cardIndex].order)
                 : getAllProperties().length,
             description,
-            link,
+            link: existingCards[cardIndex]?.link || "",
             image: normalized.image,
             images: normalized.images,
             code: legacyCard ? legacyCard.code || "LEGACY" : "ADM",
@@ -6093,28 +5803,19 @@
           typeWriter();
         }
 
-        // Inicializar carrosséis
+        if (linkedPropertyId) {
+          document.body.classList.add("property-link-view");
+          document.getElementById("property-link-header").hidden = false;
+        }
+        document.getElementById("property-search").addEventListener("input", updateCatalogView);
+        updateCatalogView();
         initCarousels();
-        initPropertiesCarousel();
-        initPropertiesCarousel(
-          "properties-carousel-locacoes",
-          "carousel-prev-locacoes",
-          "carousel-next-locacoes",
-        );
 
-        // Carregar dados do Firebase
-        loadFirebaseDataOnStart().then(() => {
-          console.log("✅ Dados carregados com sucesso!");
-
-          // Corrigir cards órfãos
+        loadFirebaseDataOnStart().then((loadedFromServer) => {
           fixOrphanCards();
-
-          // Abrir imóvel compartilhado (?imovel=ID)
-          openPropertyFromUrl();
-
-          if (isCloudAvailable()) {
-            listenToRealTimeUpdates();
-          }
+          catalogState = loadedFromServer ? "ready" : "error";
+          updateCatalogView();
+          listenToRealTimeUpdates();
         });
 
         // Configurar links
